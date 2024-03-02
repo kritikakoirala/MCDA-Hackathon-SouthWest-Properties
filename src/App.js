@@ -1,18 +1,19 @@
 import logo from "./logo.svg";
-import "./App.css";
+// import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Listing from "./components/Listing";
+import Navbar from "./common/Navbar";
+import "./assets/styles/main.css";
 
 function App() {
   return (
     <>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/lists" element={<Listing />} />
-        </Routes>
-      </Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/properties" element={<Listing />} />
+      </Routes>
     </>
   );
 }
