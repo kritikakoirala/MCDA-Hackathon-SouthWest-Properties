@@ -4,7 +4,7 @@ import logo from "../assets/img/Logo.png";
 
 const Navbar = () => {
   return (
-    <nav class="navbar navbar-expand-sm shadow-sm bg-body rounded m-0 p-xs-2 p-sm-0">
+    <nav class="navbar navbar-expand-sm shadow-sm bg-body rounded m-0 p-xs-2 p-sm-0 position-sticky top-0 start-0">
       <div class="container">
         <button
           class="navbar-toggler"
