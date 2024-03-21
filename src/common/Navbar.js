@@ -34,6 +34,11 @@ const Navbar = () => {
                 Properties
               </Link>
             </li>
+            <li class="nav-item">
+              <Link class="nav-link" to="/model">
+                Rent Forecast
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
