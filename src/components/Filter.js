@@ -11,16 +11,13 @@ import LabelHeader from "../common/LabelHeader";
 import Dropdown from "../common/Dropdown";
 import Tags from "../common/Tags";
 import Button from "../common/Button";
-import jsonData from "../assets/sampleData/sample_data.json";
 
-const Filter = ({ handleFilter, clearAll, className }) => {
+const Filter = ({ handleFilter, clearAll, className, allData }) => {
   const [data, setData] = useState({
-    propertyType: [],
-    bedroom: ["1", "2", "3", "4+"],
-    bath: ["1", "2 ", "3", "4+"],
-    // price: "",
-    pets_policy: ["Dogs Allowed", "Cats Allowed", "Any", "No Pets"],
-    amenities: ["heat", "wifi", "parking"],
+    listingPropertyType: [],
+    bedroomCount: [1, 2, 3, 4],
+    bathroomCount: [1, 2, 3, 4],
+    listingRent: "",
   });
   const [selectedFilter, setSelectedFilter] = useState({});
 
@@ -28,33 +25,39 @@ const Filter = ({ handleFilter, clearAll, className }) => {
     // Function to extract unique values for each key
     const extractUniqueValues = () => {
       const propertyTypes = [
-        ...new Set(jsonData.map((item) => item["Property Type"])),
+        ...new Set(allData?.map((item) => item["listingPropertyType"])),
       ];
 
       setData((data) => ({
         ...data,
-        propertyType: propertyTypes,
+        listingPropertyType: propertyTypes,
       }));
     };
 
     // Call the function to extract unique values when component mounts
     extractUniqueValues();
-  }, [jsonData]);
+  }, [allData]);
 
   const onPropertyChange = (e) => {
     setSelectedFilter((selectedFilter) => ({
       ...selectedFilter,
-      property_type: e?.target?.value,
+      listingPropertyType: e?.target?.value,
     }));
   };
 
   const onPriceChange = (e) => {
     e?.preventDefault();
     const { name, value } = e?.target;
+    // console.log(selectedFilter);
+
+    // if(name)
 
     setSelectedFilter((selectedFilter) => ({
       ...selectedFilter,
-      rent_range: { ...selectedFilter?.rent_range, [name]: value },
+      listingRent: {
+        ...selectedFilter?.listingRent,
+        [name]: parseFloat(value),
+      },
     }));
   };
 
@@ -64,16 +67,17 @@ const Filter = ({ handleFilter, clearAll, className }) => {
     clearAll();
   };
 
+  // console.log(selectedFilter);
   return (
     <div>
       <div className={`${className}   px-3`}>
         <div className="py-3 custom-bottom">
           <LabelHeader title="Property Type" icon={<BsBuildingsFill />} />
           <Dropdown
-            options={data?.propertyType}
+            options={data?.listingPropertyType}
             title="Property Type"
-            name="property_type"
-            value={selectedFilter?.property_type || ""}
+            name="listingPropertyType"
+            value={selectedFilter?.listingPropertyType || ""}
             onChange={onPropertyChange}
           />
         </div>
@@ -89,7 +93,7 @@ const Filter = ({ handleFilter, clearAll, className }) => {
                   id="minVal"
                   placeholder="0"
                   onChange={onPriceChange}
-                  value={selectedFilter?.rent_range?.minVal || ""}
+                  value={selectedFilter?.listingRent?.minVal || ""}
                 />
                 <label for="minVal" className="fs-8 text-primary-color">
                   Min
@@ -103,24 +107,22 @@ const Filter = ({ handleFilter, clearAll, className }) => {
                   name="maxVal"
                   placeholder="2000"
                   onChange={onPriceChange}
-                  value={selectedFilter?.rent_range?.maxVal || ""}
+                  value={selectedFilter?.listingRent?.maxVal || ""}
                 />
                 <label for="maxVal" className="fs-8 text-primary-color">
                   Max
                 </label>
               </div>
             </form>
-            {/* <form class="form-floating price ms-3">
-            
-          </form> */}
           </div>
         </div>
 
         <div className="py-3 custom-bottom">
           <LabelHeader title="Bedroom" icon={<FaBed />} />
           <Tags
-            label="bedroom"
-            tags={data?.bedroom}
+            show="bed"
+            label="bedroomCount"
+            tags={data?.bedroomCount}
             setSelectedFilter={setSelectedFilter}
             selectedFilter={selectedFilter}
           />
@@ -129,31 +131,13 @@ const Filter = ({ handleFilter, clearAll, className }) => {
         <div className="py-3 custom-bottom">
           <LabelHeader title="Bath" icon={<GiBathtub />} />
           <Tags
-            label="bath"
-            tags={data?.bath}
+            show="bath"
+            label="bathroomCount"
+            tags={data?.bathroomCount}
             setSelectedFilter={setSelectedFilter}
             selectedFilter={selectedFilter}
           />
         </div>
-
-        <div className="py-3">
-          <LabelHeader title="Pets Policy" icon={<MdOutlinePets />} />
-          <Tags
-            label="pets"
-            tags={data?.pets_policy}
-            setSelectedFilter={setSelectedFilter}
-            selectedFilter={selectedFilter}
-          />
-        </div>
-        {/* <div className="py-2">
-        <LabelHeader title="Amenities" icon={<MdOutlinePets />} />
-        <Tags
-          label="amenities"
-          tags={data?.amenities}
-          setSelectedFilter={setSelectedFilter}
-          selectedFilter={selectedFilter}
-        />
-      </div> */}
 
         <div className=" d-flex justify-content-center align-items-center">
           <Button onClick={() => handleFilter(selectedFilter)}>Filter</Button>

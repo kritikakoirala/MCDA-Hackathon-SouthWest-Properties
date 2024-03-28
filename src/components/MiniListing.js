@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import jsonData from "../assets/sampleData/rentals_ca.json";
-
 import ReactPaginate from "react-paginate";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
@@ -35,11 +33,11 @@ export function PaginatedItems({
 
   const endOffset = itemOffset + itemsPerPage;
   const currentItems = filteredItems?.slice(itemOffset, endOffset);
-  const pageCount = Math.ceil(jsonData.length / itemsPerPage);
+  const pageCount = Math.ceil(filteredItems.length / itemsPerPage);
 
   // Invoke when user click to request another page.
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % jsonData.length;
+    const newOffset = (event.selected * itemsPerPage) % filteredItems.length;
     console.log(
       `User requested page number ${event.selected}, which is offset ${newOffset}`
     );
@@ -84,14 +82,14 @@ export const MiniItems = ({ currentItems, handleMouseEvent }) => {
               onMouseOut={() => handleMouseEvent({})}
             >
               <img
-                src={item?.photo?.url}
+                src={item?.imageLink}
                 class=" me-3 border-0 "
-                alt={item?.photo?.alt}
+                alt={item?.listingAddress}
               />
               <div className="pt-3 pe-2">
-                <h4 class="card-text fs-9">{item?.name}</h4>
+                <h4 class="card-text fs-9">{item?.listingAddress}</h4>
                 <p className="text-secondary-color fw-bold mb-1">
-                  ${item?.rent_range[0]}
+                  ${item?.listingRent}
                 </p>
               </div>
             </div>

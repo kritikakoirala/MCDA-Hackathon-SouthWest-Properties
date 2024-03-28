@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useFetcher, useNavigate } from "react-router-dom";
-
-// import jsonData from "../assets/sampleData/sample_data.json";
-import jsonData from "../assets/sampleData/rentals_ca.json";
-
 import ReactPaginate from "react-paginate";
 import Switch from "react-switch";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import MapView from "./MapView";
 import MiniListing from "./MiniListing";
 import Button from "../common/Button";
+import noImg from "../assets/img/no-img.jpg";
 
 const Listing = ({ filteredItems }) => {
+  // console.log("@filterd", filteredItems);
   const [itemToshow, setItemToshow] = useState({});
   const [viewMode, setViewMode] = useState({
     mode: "list",
@@ -67,19 +65,19 @@ const Listing = ({ filteredItems }) => {
             {viewMode?.mode === "list" ? (
               <PaginatedItems itemsPerPage={8} filteredItems={filteredItems} />
             ) : (
-              <div className="container p-0 pt-5">
+              <div className="container-fluid p-0 pt-5">
                 <div className="row">
-                  <div className="col-lg-4 col-md-4 col-sm-4 p-0">
+                  <div className="col-lg-3 col-md-4 col-sm-4 p-0">
                     <MiniListing
                       filteredItems={filteredItems}
                       handleMouseEvent={handleMouseEvent}
                     />
                   </div>
                   <div className="col-lg-8 col-md-8 col-sm-8 pt-2 px-4">
-                    <MapView
+                    {/* <MapView
                       filteredItems={filteredItems}
                       itemToshow={itemToshow}
-                    />
+                    /> */}
                   </div>
                 </div>
               </div>
@@ -104,7 +102,7 @@ export function PaginatedItems({ itemsPerPage, filteredItems }) {
 
   const endOffset = itemOffset + itemsPerPage;
   const currentItems = filteredItems?.slice(itemOffset, endOffset);
-  const pageCount = Math.ceil(jsonData.length / itemsPerPage);
+  const pageCount = Math.ceil(filteredItems?.length / itemsPerPage);
 
   // Invoke when user click to request another page.
   const handlePageClick = (event) => {
@@ -136,7 +134,7 @@ export function Items({ currentItems }) {
   const navigate = useNavigate();
 
   const handleRedirect = (item) => {
-    navigate(`/properties/${item?.id}`, { state: { item: item } });
+    navigate(`/properties/${item?.id}`, { state: item?.id });
   };
 
   return (
@@ -151,26 +149,24 @@ export function Items({ currentItems }) {
                   onClick={() => handleRedirect(item)}
                 >
                   <img
-                    src={item?.photo?.url}
+                    src={item?.imageLink || noImg}
                     class="propertyImage"
-                    alt={item?.photo?.alt}
+                    alt={item?.listingAddress}
                   />
                   <div
                     className="tags position-absolute end-0 pe-3"
-                    style={{ bottom: "20%" }}
+                    style={{ bottom: "22%" }}
                   >
                     <span className="bg-primary-color rounded-pill p-1 px-3 fs-8">
-                      {item.property_type}
+                      {item.listingPropertyType}
                     </span>
                   </div>
                   <div class="card-body  ">
                     <p className="text-secondary-color fw-bold mb-1">
-                      ${item?.rent_range[0]} - $
-                      {item?.rent_range[item?.rent_range?.length - 1]}
+                      ${item?.listingRent}
                     </p>
-                    <h4 class="card-text fs-9">{item?.name}</h4>
                     <p className="mb-0 fs-8 text-secondary fw-bold">
-                      {item?.Location}
+                      {item?.listingAddress}
                     </p>
                   </div>
                   <div class="overlay">

@@ -1,6 +1,6 @@
 import React from "react";
 
-const Tags = ({ tags, setSelectedFilter, selectedFilter, label }) => {
+const Tags = ({ tags, setSelectedFilter, selectedFilter, label, show }) => {
   return (
     <div>
       {tags &&
@@ -21,7 +21,8 @@ const Tags = ({ tags, setSelectedFilter, selectedFilter, label }) => {
                 }))
               }
             >
-              {tag} {label}
+              {tag === 4 || tag > 4 ? tag + "+ " + show : tag + " " + show}
+              {/* {tag} {show} */}
             </span>
           );
         })}
