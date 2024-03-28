@@ -20,7 +20,6 @@ const Properties = () => {
       .get("api/listings")
       .then((res) => {
         setInitialData(res?.data);
-        // console.log(res);
       })
       .catch((err) => {
         console.log(err);
@@ -30,7 +29,6 @@ const Properties = () => {
   useEffect(() => {
     setData(initialData);
   }, [initialData]);
-  // console.log("@initialData", initialData);
 
   useEffect(() => {
     // Apply search
@@ -52,50 +50,7 @@ const Properties = () => {
             console.log(err);
           })
       : setFilteredData(data);
-    // console.log("@filters", filters);
   }, [filters, data, sortBy]);
-
-  // useEffect(() => {
-  //   // Apply filter
-
-  //   const filtered = data?.filter((item) => {
-  //     // Check if the item matches the filter criteria
-  //     let meetsCriteria = true;
-  //     if (filters?.bath) {
-  //       meetsCriteria =
-  //         meetsCriteria &&
-  //         item?.baths_range?.includes(parseFloat(filters?.bath));
-  //     }
-  //     if (filters?.bedroom) {
-  //       meetsCriteria =
-  //         meetsCriteria &&
-  //         item?.beds_range?.includes(parseInt(filters?.bedroom?.trim()));
-  //       console.log(meetsCriteria);
-  //     }
-  //     if (filters?.property_type) {
-  //       meetsCriteria =
-  //         meetsCriteria &&
-  //         item?.property_type.toLowerCase() ===
-  //           filters?.property_type?.toLocaleLowerCase();
-  //     }
-  //     if (filters?.rent_range) {
-  //       meetsCriteria =
-  //         meetsCriteria &&
-  //         item.rent_range[0] >= filters?.rent_range?.minVal &&
-  //         item.rent_range[1] <= filters?.rent_range?.maxVal;
-  //     }
-
-  //     return meetsCriteria;
-  //   });
-
-  //   if (sortBy === "price_low_to_high") {
-  //     filtered.sort((a, b) => a.rent_range[0] - b.rent_range[0]);
-  //   } else if (sortBy === "price_high_to_low") {
-  //     filtered.sort((a, b) => b.rent_range[0] - a.rent_range[0]);
-  //   } else {
-  //   }
-  //   setFilteredData(filtered);
-  // }, [filters, data, sortBy]);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
