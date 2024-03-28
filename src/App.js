@@ -8,6 +8,8 @@ import SingleView from "./components/SingleView";
 import Properties from "./components/Properties";
 import Model from "./components/Model";
 import { useEffect } from "react";
+import MapTest from "./components/MapTest";
+import Model_Predictions from "./components/Model_Predictions";
 
 function App() {
   const successCallback = (position) => {
@@ -36,6 +38,8 @@ function App() {
         <Route path="/properties" element={<Properties />} />
         <Route path="/properties/:id" element={<SingleView />} />
         <Route path="/model" element={<Model />} />
+        <Route path="/model/results" element={<Model_Predictions />} />
+        <Route path="/map" element={<MapTest />} />
       </Routes>
     </>
   );
