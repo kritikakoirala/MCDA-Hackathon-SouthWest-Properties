@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Filter from "./Filter";
 import Search from "./Search";
-import jsonData from "../assets/sampleData/rentals_ca.json";
 import Listing from "./Listing";
 import Dropdown from "../common/Dropdown";
 import { MdClose } from "react-icons/md";
+import { instance } from "../config/config";
 
 const Properties = () => {
   // const initialData = jsonData;
-  const [initialData, setInitialData] = useState(jsonData);
+  const [initialData, setInitialData] = useState([]);
   const [data, setData] = useState(initialData);
   const [filteredData, setFilteredData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,64 +16,93 @@ const Properties = () => {
   const [sortBy, setSortBy] = useState(""); // State for sorting
 
   useEffect(() => {
-    setInitialData(jsonData);
-  }, [jsonData]);
+    instance
+      .get("api/listings")
+      .then((res) => {
+        setInitialData(res?.data);
+        // console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    setData(initialData);
+  }, [initialData]);
+  // console.log("@initialData", initialData);
+
   useEffect(() => {
     // Apply search
-    // console.log(searchTerm);
-    const searchResult = initialData.filter((item) =>
-      item?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    const searchResult = initialData?.filter((item) =>
+      item?.listingAddress?.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setData(searchTerm ? searchResult : initialData);
   }, [searchTerm]);
 
   useEffect(() => {
-    // Apply filter
-    const filtered = data?.filter((item) => {
-      // console.log("@item", item);
-      // Check if the item matches the filter criteria
-      let meetsCriteria = true;
-      if (filters?.bath) {
-        meetsCriteria =
-          meetsCriteria &&
-          item?.baths_range?.includes(parseFloat(filters?.bath));
-      }
-      if (filters?.bedroom) {
-        meetsCriteria =
-          meetsCriteria &&
-          item?.beds_range?.includes(parseInt(filters?.bedroom?.trim()));
-        console.log(meetsCriteria);
-      }
-      if (filters?.property_type) {
-        meetsCriteria =
-          meetsCriteria &&
-          item?.property_type.toLowerCase() ===
-            filters?.property_type?.toLocaleLowerCase();
-      }
-      if (filters?.rent_range) {
-        meetsCriteria =
-          meetsCriteria &&
-          item.rent_range[0] >= filters?.rent_range?.minVal &&
-          item.rent_range[1] <= filters?.rent_range?.maxVal;
-      }
-
-      return meetsCriteria;
-    });
-
-    if (sortBy === "price_low_to_high") {
-      filtered.sort((a, b) => a.rent_range[0] - b.rent_range[0]);
-    } else if (sortBy === "price_high_to_low") {
-      filtered.sort((a, b) => b.rent_range[0] - a.rent_range[0]);
-    } else {
-    }
-    setFilteredData(filtered);
+    filters && Object.keys(filters)?.length > 0
+      ? instance
+          .post("api/listings/filter", filters)
+          .then((res) => {
+            setFilteredData(res?.data);
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+      : setFilteredData(data);
+    // console.log("@filters", filters);
   }, [filters, data, sortBy]);
+
+  // useEffect(() => {
+  //   // Apply filter
+
+  //   const filtered = data?.filter((item) => {
+  //     // Check if the item matches the filter criteria
+  //     let meetsCriteria = true;
+  //     if (filters?.bath) {
+  //       meetsCriteria =
+  //         meetsCriteria &&
+  //         item?.baths_range?.includes(parseFloat(filters?.bath));
+  //     }
+  //     if (filters?.bedroom) {
+  //       meetsCriteria =
+  //         meetsCriteria &&
+  //         item?.beds_range?.includes(parseInt(filters?.bedroom?.trim()));
+  //       console.log(meetsCriteria);
+  //     }
+  //     if (filters?.property_type) {
+  //       meetsCriteria =
+  //         meetsCriteria &&
+  //         item?.property_type.toLowerCase() ===
+  //           filters?.property_type?.toLocaleLowerCase();
+  //     }
+  //     if (filters?.rent_range) {
+  //       meetsCriteria =
+  //         meetsCriteria &&
+  //         item.rent_range[0] >= filters?.rent_range?.minVal &&
+  //         item.rent_range[1] <= filters?.rent_range?.maxVal;
+  //     }
+
+  //     return meetsCriteria;
+  //   });
+
+  //   if (sortBy === "price_low_to_high") {
+  //     filtered.sort((a, b) => a.rent_range[0] - b.rent_range[0]);
+  //   } else if (sortBy === "price_high_to_low") {
+  //     filtered.sort((a, b) => b.rent_range[0] - a.rent_range[0]);
+  //   } else {
+  //   }
+  //   setFilteredData(filtered);
+  // }, [filters, data, sortBy]);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
 
   const handleFilter = (selectedFilter) => {
+    // console.log(selectedFilter);
     setFilters(selectedFilter);
   };
 
@@ -142,7 +171,11 @@ const Properties = () => {
                 </div>
                 <div class="offcanvas-body py-4">
                   {" "}
-                  <Filter handleFilter={handleFilter} clearAll={clearAll} />
+                  <Filter
+                    handleFilter={handleFilter}
+                    clearAll={clearAll}
+                    allData={data}
+                  />
                 </div>
               </div>
             </div>
@@ -150,19 +183,9 @@ const Properties = () => {
           <div className="my-2 filtersBadge">
             {filters &&
               Object?.keys(filters)?.map((item, idx) => {
-                console.log(filters[item]);
-                return item !== "rent_range" ? (
+                return (
                   <span className="badge  rounded-pill  bg-primary-color text-capitalize me-2">
                     {item && item?.replace(/_/g, " ")} : {filters[item]}
-                    <MdClose
-                      className="icon"
-                      onClick={() => removeItem(item)}
-                    />
-                  </span>
-                ) : (
-                  <span className="badge rounded-pill bg-primary-color text-capitalize me-2">
-                    {item} :{" "}
-                    {filters[item]?.minVal + "-" + filters[item]?.maxVal}
                     <MdClose
                       className="icon"
                       onClick={() => removeItem(item)}
