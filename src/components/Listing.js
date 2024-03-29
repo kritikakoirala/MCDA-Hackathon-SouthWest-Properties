@@ -32,12 +32,12 @@ const Listing = ({ filteredItems }) => {
         <div className="row">
           <div className="col-lg-12 col-md-12 col-sm-12 p-0">
             <div className=" py-3 pe-4  mb-2 d-flex justify-content-between align-items-center">
-              <div
+              {/* <div
                 className="text-decoration-underline"
                 onClick={(e) => navigate("/listings/create")}
               >
                 Add your own Listing?
-              </div>
+              </div> */}
               <div className="toggle d-flex justify-content-center align-items-center">
                 <span
                   className={`fs-8 ${
