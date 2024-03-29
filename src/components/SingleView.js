@@ -1,44 +1,136 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { MdOutlineEventNote } from "react-icons/md";
 import { BsFillLampFill } from "react-icons/bs";
 import { BiDetail } from "react-icons/bi";
 import { FaLocationDot } from "react-icons/fa6";
+import { instance } from "../config/config";
+import { MdLocalGroceryStore, MdMovie, MdEmergencyShare } from "react-icons/md";
+import { GiBookshelf, GiCrimeSceneTape } from "react-icons/gi";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 const SingleView = () => {
   const location = useLocation();
-  const { item } = location?.state;
+  const id = location?.state;
 
-  const groupedAmenities = item?.amenities?.reduce((acc, curr) => {
-    const categorySlug = curr.category.slug;
-    if (!acc[categorySlug]) {
-      acc[categorySlug] = [];
-    }
-    acc[categorySlug].push(curr);
-    return acc;
-  }, {});
+  const [item, setItem] = useState(null);
+  // const [position, setPosition] = useState(null);
 
-  const updatedAmenity =
-    groupedAmenities &&
-    Object?.entries(groupedAmenities).map(([category, amenities]) => ({
-      category,
-      amenities,
-    }));
+  const icon = L.icon({
+    iconUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+  });
 
-  const getBedandBathDetails = () => {
+  // useEffect(() => {
+  //   instance
+  //     .get(`api/listing/${id}`)
+  //     .then((res) => {
+
+  //       setItem(res?.data);
+  //       // setPosition([res?.data?.listingLatitude, res?.data?.listingLongitude]);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, [id]);
+
+  const getAllperks = (label) => {
+    let message = "";
+    let perks = [];
     return (
-      <p className=" fs-8 text-secondary">
-        {`${Math.max(...item?.beds_range)} Bed | ${Math.max(
-          ...item?.baths_range
-        )} Bath `}
-      </p>
+      <div className={`${label} custom-bottom my-3`}>
+        <span className="fs-8">{label}</span>
+
+        <div className="d-flex">
+          {item &&
+            Object.keys(item)?.map((field, idx) => {
+              if (field?.includes(label) && item[field] === "1") {
+                const matches = field.match(/([a-zA-Z]+)([A-Z][a-z]+)/);
+                perks = matches[1];
+                return (
+                  <p
+                    key={idx}
+                    className="border-primary-color rounded-pill p-1 px-3 fs-8 me-2 my-1"
+                  >
+                    {matches && matches[1]}{" "}
+                    {/* Displaying the first part of the split field */}
+                  </p>
+                );
+              } else {
+                message = `Sorry, no ${label} included.`;
+                return null; // Return null if the conditions are not met
+              }
+            })}
+        </div>
+        <p className="fs-9 mb-2">{perks?.length == 0 && message}</p>
+      </div>
+    );
+  };
+
+  const getAllScores = (type, item) => {
+    let label = type && type.toLowerCase();
+    let value =
+      type !== "crime"
+        ? parseInt(item).toFixed(2)
+        : item === "Very_Safe"
+        ? 90
+        : item === "Safe"
+        ? 75
+        : item === "Risky"
+        ? 50
+        : item === "Dangerous"
+        ? 20
+        : "";
+    return (
+      <div className="d-flex flex-column justify-content-start align-items-center ms-4 mb-3">
+        <div className="scoreIcon">
+          {label === "grocery" ? (
+            <MdLocalGroceryStore />
+          ) : label === "recreation" ? (
+            <MdMovie />
+          ) : label === "education" ? (
+            <GiBookshelf />
+          ) : label === "emergency" ? (
+            <MdEmergencyShare />
+          ) : label == "crime" ? (
+            <GiCrimeSceneTape />
+          ) : (
+            ""
+          )}
+        </div>
+        <span className="text-capitalize fs-9">{type} Score</span>
+
+        <div class="" style={{ width: 60, height: 60 }}>
+          <CircularProgressbar
+            value={value}
+            text={type === "crime" ? item : value}
+            styles={buildStyles({
+              // Text size
+              textSize: type === "crime" ? "20px" : "26px",
+
+              // Colors
+              pathColor:
+                type === "crime" ? (value > 50 ? "#c1cd23" : "red") : "#c1cd23",
+              textColor:
+                type === "crime" ? (value > 50 ? "#c1cd23" : "red") : "#c1cd23",
+            })}
+          />
+        </div>
+      </div>
     );
   };
 
   return (
     <>
       <div className="container p-4">
-        <div className="row">
+        {/* <div className="row">
           <div className="col-lg-12">
             <div className="d-flex details p-3">
               <div className="detailedView">
@@ -96,20 +188,7 @@ const SingleView = () => {
                       Full Details
                     </button>
                   </li>
-                  <li class="nav-item" role="presentation">
-                    <button
-                      class="nav-link rounded"
-                      id="pills-contact-tab"
-                      data-bs-toggle="pill"
-                      data-bs-target="#pills-contact"
-                      type="button"
-                      role="tab"
-                      aria-controls="pills-contact"
-                      aria-selected="false"
-                    >
-                      <FaLocationDot /> Map View
-                    </button>
-                  </li>
+
                 </ul>
                 <div class="tab-content " id="pills-tabContent">
                   <div
@@ -120,41 +199,47 @@ const SingleView = () => {
                   >
                     <div className="px-2">
                       <div className="my-1 mb-2 d-flex">
-                        {item?.active ? (
-                          <span className="border-primary-color rounded-pill p-1 px-3 fs-8">
-                            Available
-                          </span>
-                        ) : (
-                          <span className="border-primary-color rounded-pill p-1 px-3 fs-8">
-                            Sold
-                          </span>
-                        )}
-                        {item?.categories &&
-                          item?.categories?.map((cat) => {
-                            return (
-                              <>
-                                <span className="border-primary-color rounded-pill p-1 px-3 fs-8 mx-2">
-                                  {cat}
-                                </span>
-                              </>
-                            );
-                          })}
+                        <span className="border-primary-color rounded-pill p-1 px-3 fs-8">
+                          {item?.listingPropertyType}
+                        </span>
+
+                        <span className="border-primary-color rounded-pill p-1 px-3 fs-8 ms-2">
+                          {item?.listingType}
+                        </span>
                       </div>
 
-                      <h6 class=" fw-bold">{item?.name}</h6>
-                      <p className="text-primary-color fw-bold mb-1">
-                        ${item?.rent_range[0]}
+                      <h6 class="text-secondary fw-bold">
+                        {item?.listingAddress}
+                      </h6>
+                      <p className="text-primary-color fw-bold">
+                        ${item?.listingRent}
                       </p>
                       <p className=" fs-8 text-secondary fw-bold d-flex align-items-center">
                         <span>
                           {" "}
                           <FaLocationDot />
                         </span>
-                        <span>{item?.address1}</span>
+                        <span>{item?.listingMinorRegion}</span>,
+                        <span>{item?.listingMajorRegion}</span>
                       </p>
-                      <p className=" fs-8 text-secondary">{item?.summary}</p>
+                      <p className=" fs-8 text-secondary">
+                        <span>
+                          {item?.bedroomCount && parseInt(item?.bedroomCount)}{" "}
+                          Bed
+                        </span>{" "}
+                        |
+                        <span>
+                          {item?.bathroomCount && parseInt(item?.bathroomCount)}{" "}
+                          Bath
+                        </span>{" "}
+                        |<span> {item?.listingSizeSquareFeet} SF </span>
+                      </p>
 
-                      {getBedandBathDetails()}
+                      <div className="d-flex justify-content-between align-items-center w-75 mx-auto">
+                        {getAllScores("walking", item?.walkScore)}
+                        {getAllScores("bike", item?.bikeScore)}
+                        {getAllScores("transit", item?.transitScore)}
+                      </div>
                     </div>
                   </div>
                   <div
@@ -163,51 +248,37 @@ const SingleView = () => {
                     role="tabpanel"
                     aria-labelledby="pills-profile-tab"
                   >
-                    <div className="py-2 px-3">
-                      {item?.amenities &&
-                        updatedAmenity?.map((amenity, index) => {
-                          return (
-                            <div className="mb-3">
-                              <h6 className="fs-9 fw-bold text-capitalize">
-                                {amenity?.category}
-                              </h6>
-                              <div>
-                                {amenity?.amenities &&
-                                  amenity?.amenities?.map((feat, idx) => {
-                                    return (
-                                      <>
-                                        <span className="bg-secondary-color me-3 rounded-pill p-1 px-3 fs-8">
-                                          {feat?.name}
-                                        </span>
-                                      </>
-                                    );
-                                  })}
-                              </div>
-                              {/* <p>{amenity?.name}</p> */}
-                            </div>
-                          );
-                        })}
+                    <div className=" px-3">
+                      {getAllperks("Amenity")}
+                      {getAllperks("Utility")}
+                      {getAllperks("Policy")}
+                      <p className="fs-9 mt-3">
+                        <span className="text-primary-color">Note:</span> Only
+                        those amenities/utilities/policy that are available is
+                        shown.
+                      </p>
                     </div>
                   </div>
                   <div
-                    class="tab-pane fade"
+                    class="tab-pane fade p-2"
                     id="pills-details"
                     role="tabpanel"
                     aria-labelledby="pills-details-tab"
                   >
-                    ...
+                    <div className="d-flex justify-content-between align-items-center flex-wrap w-75 mx-auto">
+                      {getAllScores("grocery", item?.retailGroceryScore)}
+                      {getAllScores("Recreation", item?.retailRecreationScore)}
+                      {getAllScores("education", item?.educationCenterScore)}
+                      {getAllScores("emergency", item?.emergencyCenterScore)}
+                      {getAllScores("crime", item?.crimeScore)}
+                    </div>
                   </div>
-                  <div
-                    class="tab-pane fade"
-                    id="pills-contact"
-                    role="tabpanel"
-                    aria-labelledby="pills-contact-tab"
-                  ></div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
+        <div className="row"></div>
       </div>
     </>
   );

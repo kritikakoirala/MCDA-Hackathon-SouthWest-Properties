@@ -31,7 +31,13 @@ const Listing = ({ filteredItems }) => {
       <div className="container-fluid pt-5 mt-5">
         <div className="row">
           <div className="col-lg-12 col-md-12 col-sm-12 p-0">
-            <div className=" py-3 pe-4 float-end mb-2 d-flex justify-content-between align-items-center">
+            <div className=" py-3 pe-4  mb-2 d-flex justify-content-between align-items-center">
+              <div
+                className="text-decoration-underline"
+                onClick={(e) => navigate("/listings/create")}
+              >
+                Add your own Listing?
+              </div>
               <div className="toggle d-flex justify-content-center align-items-center">
                 <span
                   className={`fs-8 ${

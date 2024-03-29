@@ -10,6 +10,7 @@ import Model from "./components/Model";
 import { useEffect } from "react";
 import MapTest from "./components/MapTest";
 import Model_Predictions from "./components/Model_Predictions";
+import Create from "./components/listingCRUD/Create";
 
 function App() {
   const successCallback = (position) => {
@@ -40,6 +41,7 @@ function App() {
         <Route path="/model" element={<Model />} />
         <Route path="/model/results" element={<Model_Predictions />} />
         <Route path="/map" element={<MapTest />} />
+        <Route path="/listings/create" element={<Create />} />
       </Routes>
     </>
   );
