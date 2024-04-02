@@ -68,7 +68,7 @@ export const MiniItems = ({ currentItems, handleMouseEvent }) => {
   const navigate = useNavigate();
 
   const handleRedirect = (item) => {
-    navigate(`/properties/${item?.id}`, { state: { item: item } });
+    navigate(`/properties/${item?.id}`, { state: item?.id });
   };
   return (
     <>

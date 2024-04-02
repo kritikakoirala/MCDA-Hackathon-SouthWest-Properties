@@ -28,18 +28,17 @@ const SingleView = () => {
     popupAnchor: [1, -34],
   });
 
-  // useEffect(() => {
-  //   instance
-  //     .get(`api/listing/${id}`)
-  //     .then((res) => {
-
-  //       setItem(res?.data);
-  //       // setPosition([res?.data?.listingLatitude, res?.data?.listingLongitude]);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }, [id]);
+  useEffect(() => {
+    instance
+      .get(`api/listing/${id}`)
+      .then((res) => {
+        setItem(res?.data);
+        // setPosition([res?.data?.listingLatitude, res?.data?.listingLongitude]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [id]);
 
   const getAllperks = (label) => {
     let message = "";
@@ -69,7 +68,9 @@ const SingleView = () => {
               }
             })}
         </div>
-        <p className="fs-9 mb-2">{perks?.length == 0 && message}</p>
+        <p className="fs-9 mb-2 fw-normal text-secondary">
+          {perks?.length == 0 && message}
+        </p>
       </div>
     );
   };
@@ -129,12 +130,12 @@ const SingleView = () => {
 
   return (
     <>
-      <div className="container p-4">
-        {/* <div className="row">
+      <div className="container">
+        <div className="row">
           <div className="col-lg-12">
-            <div className="d-flex details p-3">
-              <div className="detailedView">
-                <img src={item?.photo?.url} className="position-relative" />
+            <div className="d-flex flex-wrap justify-content-center between align-items-center p-4 ">
+              <div className="detailedView mb-3">
+                <img src={item?.imageLink} className="position-relative" />
               </div>
 
               <div className=" ms-4 shadow">
@@ -188,7 +189,6 @@ const SingleView = () => {
                       Full Details
                     </button>
                   </li>
-
                 </ul>
                 <div class="tab-content " id="pills-tabContent">
                   <div
@@ -197,7 +197,7 @@ const SingleView = () => {
                     role="tabpanel"
                     aria-labelledby="pills-home-tab"
                   >
-                    <div className="px-2">
+                    <div className="px-3">
                       <div className="my-1 mb-2 d-flex">
                         <span className="border-primary-color rounded-pill p-1 px-3 fs-8">
                           {item?.listingPropertyType}
@@ -211,7 +211,7 @@ const SingleView = () => {
                       <h6 class="text-secondary fw-bold">
                         {item?.listingAddress}
                       </h6>
-                      <p className="text-primary-color fw-bold">
+                      <p className="text-primary-color fs-9 fw-bold mb-2">
                         ${item?.listingRent}
                       </p>
                       <p className=" fs-8 text-secondary fw-bold d-flex align-items-center">
@@ -252,7 +252,7 @@ const SingleView = () => {
                       {getAllperks("Amenity")}
                       {getAllperks("Utility")}
                       {getAllperks("Policy")}
-                      <p className="fs-9 mt-3">
+                      <p className="fs-9 mt-3 mb-4">
                         <span className="text-primary-color">Note:</span> Only
                         those amenities/utilities/policy that are available is
                         shown.
@@ -277,7 +277,7 @@ const SingleView = () => {
               </div>
             </div>
           </div>
-        </div> */}
+        </div>
         <div className="row"></div>
       </div>
     </>

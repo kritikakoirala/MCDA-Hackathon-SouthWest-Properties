@@ -7,9 +7,9 @@ import MapView from "./MapView";
 import MiniListing from "./MiniListing";
 import Button from "../common/Button";
 import noImg from "../assets/img/no-img.jpg";
+import Loading from "../components/Loading";
 
 const Listing = ({ filteredItems }) => {
-  // console.log("@filterd", filteredItems);
   const [itemToshow, setItemToshow] = useState({});
   const [viewMode, setViewMode] = useState({
     mode: "list",
@@ -26,18 +26,20 @@ const Listing = ({ filteredItems }) => {
     setItemToshow(item);
   };
 
+  const navigate = useNavigate();
+
   return (
     <>
       <div className="container-fluid pt-5 mt-5">
         <div className="row">
           <div className="col-lg-12 col-md-12 col-sm-12 p-0">
             <div className=" py-3 pe-4  mb-2 d-flex justify-content-between align-items-center">
-              {/* <div
-                className="text-decoration-underline"
+              <div
+                className="text-decoration-underline cursor-pointer"
                 onClick={(e) => navigate("/listings/create")}
               >
                 Add your own Listing?
-              </div> */}
+              </div>
               <div className="toggle d-flex justify-content-center align-items-center">
                 <span
                   className={`fs-8 ${
@@ -146,7 +148,7 @@ export function Items({ currentItems }) {
   return (
     <div className="container p-0">
       <div className="row w-100">
-        {currentItems &&
+        {currentItems?.length > 0 ? (
           currentItems.map((item) => {
             return (
               <div className="col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center">
@@ -186,7 +188,12 @@ export function Items({ currentItems }) {
                 </div>
               </div>
             );
-          })}
+          })
+        ) : (
+          <div className="w-100 h-100 d-flex justify-content-center align-items-center">
+            <Loading />
+          </div>
+        )}
       </div>
     </div>
   );
