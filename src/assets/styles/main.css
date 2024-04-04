@@ -7,7 +7,7 @@ body {
   --primary-color: #c1cd23;
   --secondary-color: #e68f1a;
   --tertiary-color: #00aeef;
-  --gray-color: #f2f2f2;
+  --gray-color: rgb(242, 242, 242, 0.3);
 }
 
 a,
