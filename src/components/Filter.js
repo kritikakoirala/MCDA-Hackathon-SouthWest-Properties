@@ -48,15 +48,17 @@ const Filter = ({ handleFilter, clearAll, className, allData }) => {
   const onPriceChange = (e) => {
     e?.preventDefault();
     const { name, value } = e?.target;
-    // console.log(selectedFilter);
 
-    // if(name)
+    // Parse the input value to a float
+    const parsedValue = parseFloat(value);
 
     setSelectedFilter((selectedFilter) => ({
       ...selectedFilter,
       listingRent: {
-        ...selectedFilter?.listingRent,
-        [name]: parseFloat(value),
+        // If minVal input is empty, set it to 0
+        minVal: name === "minVal" && !isNaN(parsedValue) ? parsedValue : 0,
+        // If maxVal input is empty, set it to 30000
+        maxVal: name === "maxVal" && !isNaN(parsedValue) ? parsedValue : 30000,
       },
     }));
   };
@@ -139,7 +141,7 @@ const Filter = ({ handleFilter, clearAll, className, allData }) => {
           />
         </div>
 
-        <div className=" d-flex justify-content-center align-items-center">
+        <div className=" d-flex justify-content-center align-items-center mt-3">
           <Button onClick={() => handleFilter(selectedFilter)}>Filter</Button>
           <Button className={"bg-black mx-3"} onClick={clearFilter}>
             Clear All

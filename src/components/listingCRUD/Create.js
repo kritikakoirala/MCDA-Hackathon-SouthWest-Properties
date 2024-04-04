@@ -5,14 +5,17 @@ import Button from "../../common/Button";
 import MultiStep from "react-multistep";
 import Dropdown from "../../common/Dropdown";
 import { AddressAutofill } from "@mapbox/search-js-react";
+import { instance } from "../../config/config";
 
 const Create = () => {
   const [file, setFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const [data, setData] = useState({
-    propertyType: ["house", "apartment", "rental"],
+    property_type: ["townhouse", "apartment"],
+    listing_property_type: ["lease"],
     bedroom: ["1", "2", "3", "4+"],
     bath: ["1", "2", "3", "4+"],
     utility: [],
@@ -20,25 +23,30 @@ const Create = () => {
     amenities: [],
     address: "",
     sqFt: 0,
+    rent: 0,
+    imageLink: "",
   });
 
   const [selectedFeature, setSelectedFeature] = useState({
-    listingAddress: "",
-    listingPropertyType: "",
-    listingSizeSquareFeet: "",
-    bedroomCount: "",
-    bathroomCount: "",
-    heatUtility: 0,
-    waterUtility: 0,
-    hydroUtility: 0,
-    furnishedUtility: 0,
-    petPolicy: 0,
-    smokingPolicy: 0,
-    gymAmenity: 0,
-    parkingAmenity: 0,
-    acAmenity: 0,
-    applianceAmenity: 0,
-    storageAmenity: 0,
+    street_address: "",
+    property_type: "",
+    listing_property_type: "",
+    square_feet: 0,
+    imageLink: "",
+    bedroom: 0,
+    bathroom: 0,
+    heat: false,
+    water: false,
+    hydro: false,
+    furnished: false,
+    pet: false,
+    smoking: false,
+    gym: false,
+    parking: false,
+    ac: false,
+    appliance: false,
+    storage: false,
+    rent: 0,
   });
 
   const [sampleRows, setSampleRows] = useState([
@@ -189,7 +197,26 @@ const Create = () => {
     },
   ];
 
-  const onSingleModelSubmit = (e) => {};
+  const onSingleModelSubmit = (e) => {
+    e.preventDefault();
+    setErrorMessage("");
+    setLoading(true);
+
+    instance
+      .post("/api/listings", selectedFeature, { timeout: 600000 })
+      .then((res) => {
+        setLoading(false);
+        console.log(res);
+        setSuccessMessage("Listing Added successfully!");
+      })
+      .catch((err) => {
+        setLoading(false);
+        setErrorMessage("Something went wrong. We couldn't add the listing.");
+        console.log(err);
+      });
+    // console.log("@selectedFeature", selectedFeature);
+  };
+
   return (
     <>
       <div className="w-50 mx-auto m-4 shadow">
@@ -278,7 +305,7 @@ const Create = () => {
                       : false
                   }
                 >
-                  Predict
+                  Add
                 </Button>
               </div>
             </div>
@@ -289,6 +316,18 @@ const Create = () => {
             role="tabpanel"
             aria-labelledby="pills-profile-tab"
           >
+            {errorMessage && (
+              <p className="text-danger fs-9 mt-3 text-center">
+                {errorMessage}
+              </p>
+            )}
+
+            {successMessage && (
+              <p className="text-success fs-9 mt-3 text-center">
+                {successMessage}
+              </p>
+            )}
+
             <div className=" px-4 mx-auto">
               <MultiStep
                 activeStep={0}
@@ -315,12 +354,14 @@ const Create = () => {
                 }}
               />
             </div>
-            <div className="d-flex justify-content-center">
+            <div className="d-flex justify-content-center align-items-center">
+              {loading ? <Loading /> : ""}
               <Button
                 onClick={onSingleModelSubmit}
                 className="justify-content-center px-2 py-2 bg-primary-color border-0 rounded-0  ms-2 fs-9 my-3"
+                disabled={loading ? true : false}
               >
-                Predict
+                Add
               </Button>
             </div>
           </div>
@@ -396,7 +437,7 @@ export const Basic = ({
     }));
     setSelectedFeature((selectedFeature) => ({
       ...selectedFeature,
-      listingAddress: feature?.features[0]?.properties?.full_address,
+      street_address: feature?.features[0]?.properties?.full_address,
     }));
   };
 
@@ -404,40 +445,55 @@ export const Basic = ({
     <>
       <div className="d-flex justify-content-between align-items-center">
         <Dropdown
-          // className={"border-bottom"}
-          options={data?.propertyType}
+          className={"me-2"}
+          options={data?.property_type}
           title="Property Type"
-          name="listingPropertyType"
-          value={selectedFeature?.listingPropertyType || ""}
+          name="property_type"
+          value={selectedFeature?.property_type || ""}
           onChange={(e) =>
             setSelectedFeature((selectedFeature) => ({
               ...selectedFeature,
-              listingPropertyType: e?.target?.value,
+              property_type: e?.target?.value,
             }))
           }
         />
         <Dropdown
-          className={"mx-2"}
-          options={data?.bedroom}
-          title="Bedroom"
-          name="bedroomCount"
-          value={selectedFeature?.bedroomCount || ""}
+          // className={"mx-2"}
+          options={data?.listing_property_type}
+          title="Listing Property Type"
+          name="listing_property_type"
+          value={selectedFeature?.listing_property_type || ""}
           onChange={(e) =>
             setSelectedFeature((selectedFeature) => ({
               ...selectedFeature,
-              bedroomCount: e?.target?.value,
+              listing_property_type: e?.target?.value,
+            }))
+          }
+        />
+      </div>
+      <div className="d-flex justify-content-between align-items-center mt-2">
+        <Dropdown
+          className={"me-2"}
+          options={data?.bedroom}
+          title="Bedroom"
+          name="bedroom"
+          value={selectedFeature?.bedroom || ""}
+          onChange={(e) =>
+            setSelectedFeature((selectedFeature) => ({
+              ...selectedFeature,
+              bedroom: parseInt(e?.target?.value),
             }))
           }
         />
         <Dropdown
           options={data?.bath}
           title="Baths"
-          name="bathroomCount"
-          value={selectedFeature?.bathroomCount || ""}
+          name="bathroom"
+          value={selectedFeature?.bathroom || ""}
           onChange={(e) =>
             setSelectedFeature((selectedFeature) => ({
               ...selectedFeature,
-              bathroomCount: e?.target?.value,
+              bathroom: parseInt(e?.target?.value),
             }))
           }
         />
@@ -461,39 +517,64 @@ export const Basic = ({
             </AddressAutofill>
           </div>
         </div>
+        <div className="d-flex justify-content-between align-items-center">
+          <input
+            className="form-control"
+            placeholder="Listing Sq ft"
+            type="number"
+            name="square_feet"
+            value={selectedFeature?.square_feet || ""}
+            onChange={(e) =>
+              setSelectedFeature((selectedFeature) => ({
+                ...selectedFeature,
+                square_feet: parseInt(e?.target?.value),
+              }))
+            }
+          />
+          <input
+            className="form-control mx-2"
+            placeholder="Rent"
+            type="number"
+            name="rent"
+            value={selectedFeature?.rent || ""}
+            onChange={(e) =>
+              setSelectedFeature((selectedFeature) => ({
+                ...selectedFeature,
+                rent: parseInt(e?.target?.value),
+              }))
+            }
+          />
 
-        <input
-          className="form-control w-25"
-          placeholder="Listing Sq ft"
-          type="number"
-          name="listingSizeSquareFeet"
-          value={selectedFeature?.listingSizeSquareFeet || ""}
-          onChange={(e) =>
-            setSelectedFeature((selectedFeature) => ({
-              ...selectedFeature,
-              listingSizeSquareFeet: e?.target?.value,
-            }))
-          }
-        />
+          <input
+            className="form-control "
+            placeholder="Image Link"
+            type="text"
+            name="imageLink"
+            value={selectedFeature?.imageLink || ""}
+            onChange={(e) =>
+              setSelectedFeature((selectedFeature) => ({
+                ...selectedFeature,
+                imageLink: e?.target?.value,
+              }))
+            }
+          />
+        </div>
       </div>
     </>
   );
 };
 export const Utilities = ({ selectedFeature, setSelectedFeature }) => {
-  const allUtilities = [
-    "heatUtility",
-    "waterUtility",
-    "hydroUtility",
-    "furnishedUtility",
-  ];
+  const allUtilities = ["heat", "water", "hydro", "furnished"];
 
   const utilityChange = (e) => {
     const { name, value, checked } = e?.target;
     // console.log(data);
 
+    console.log(checked ? true : false);
+
     setSelectedFeature((selectedFeature) => ({
       ...selectedFeature,
-      [value]: checked ? 1 : 0,
+      [value]: checked ? true : false,
     }));
   };
 
@@ -519,14 +600,14 @@ export const Utilities = ({ selectedFeature, setSelectedFeature }) => {
   );
 };
 export const Policy = ({ selectedFeature, setSelectedFeature }) => {
-  const allPolicies = ["petPolicy", "smokingPolicy"];
+  const allPolicies = ["pet", "smoking"];
 
   const policyChange = (e) => {
     const { name, value, checked } = e?.target;
 
     setSelectedFeature((selectedFeature) => ({
       ...selectedFeature,
-      [value]: checked ? 1 : 0,
+      [value]: checked ? true : false,
     }));
   };
   return (
@@ -551,20 +632,14 @@ export const Policy = ({ selectedFeature, setSelectedFeature }) => {
   );
 };
 export const Amenity = ({ selectedFeature, setSelectedFeature }) => {
-  const allAmenities = [
-    "gymAmenity",
-    "parkingAmenity",
-    "acAmenity",
-    "applianceAmenity",
-    "storageAmenity",
-  ];
+  const allAmenities = ["gym", "parking", "ac", "appliance", "storage"];
 
   const onamenityChange = (e) => {
     const { name, value, checked } = e?.target;
 
     setSelectedFeature((selectedFeature) => ({
       ...selectedFeature,
-      [value]: checked ? 1 : 0,
+      [value]: checked ? true : false,
     }));
   };
   return (

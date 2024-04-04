@@ -72,7 +72,7 @@ export const MiniItems = ({ currentItems, handleMouseEvent }) => {
   };
   return (
     <>
-      <div className="px-2">
+      <div className="px-4">
         {currentItems?.map((item, idx) => {
           return (
             <div

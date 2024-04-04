@@ -12,7 +12,7 @@ import "react-circular-progressbar/dist/styles.css";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-
+import noImg from "../assets/img/no-img.jpg";
 const SingleView = () => {
   const location = useLocation();
   const id = location?.state;
@@ -135,7 +135,14 @@ const SingleView = () => {
           <div className="col-lg-12">
             <div className="d-flex flex-wrap justify-content-center between align-items-center p-4 ">
               <div className="detailedView mb-3">
-                <img src={item?.imageLink} className="position-relative" />
+                <img
+                  src={
+                    item?.imageLink?.match(/\.(jpeg|jpg|gif|png)$/) !== null
+                      ? item?.imageLink
+                      : noImg
+                  }
+                  className="position-relative"
+                />
               </div>
 
               <div className=" ms-4 shadow">

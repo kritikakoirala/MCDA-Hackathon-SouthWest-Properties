@@ -57,7 +57,6 @@ const Properties = () => {
   };
 
   const handleFilter = (selectedFilter) => {
-    // console.log(selectedFilter);
     setFilters(selectedFilter);
   };
 
@@ -84,7 +83,7 @@ const Properties = () => {
 
   return (
     <div className="propertyListing">
-      <div className="container py-4">
+      <div className="container-fluid py-4">
         <div className="advanceFilter custom-bottom">
           <div className=" d-flex justify-content-between align-items-center w-100">
             <Search searchTerm={searchTerm} handleSearch={handleSearch} />
@@ -138,9 +137,23 @@ const Properties = () => {
           <div className="my-2 filtersBadge">
             {filters &&
               Object?.keys(filters)?.map((item, idx) => {
+                // console.log(filters[item]);
                 return (
-                  <span className="badge  rounded-pill  bg-primary-color text-capitalize me-2">
-                    {item && item?.replace(/_/g, " ")} : {filters[item]}
+                  <span className="badge rounded-pill bg-primary-color text-capitalize me-2">
+                    {typeof filters[item] !== "object" ? (
+                      <>
+                        <span>{item?.replace(/_/g, " ")} :</span>
+                        <span> {filters[item]}</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>{item?.replace(/_/g, " ")} :</span>
+                        <span>
+                          {" "}
+                          {filters[item]?.minVal} - {filters[item]?.maxVal}
+                        </span>
+                      </>
+                    )}
                     <MdClose
                       className="icon"
                       onClick={() => removeItem(item)}
@@ -150,7 +163,6 @@ const Properties = () => {
               })}
           </div>
         </div>
-
         <Listing filteredItems={filteredData} />
       </div>
     </div>

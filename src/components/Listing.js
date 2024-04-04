@@ -32,8 +32,8 @@ const Listing = ({ filteredItems }) => {
     <>
       <div className="container-fluid pt-5 mt-5">
         <div className="row">
-          <div className="col-lg-12 col-md-12 col-sm-12 p-0">
-            <div className=" py-3 pe-4  mb-2 d-flex justify-content-between align-items-center">
+          <div className="col-lg-12 col-md-12 col-sm-12 px-5">
+            <div className="d-flex justify-content-between align-items-center py-4 px-5 mx-1 mx-auto">
               <div
                 className="text-decoration-underline cursor-pointer"
                 onClick={(e) => navigate("/listings/create")}
@@ -73,7 +73,7 @@ const Listing = ({ filteredItems }) => {
             {viewMode?.mode === "list" ? (
               <PaginatedItems itemsPerPage={8} filteredItems={filteredItems} />
             ) : (
-              <div className="container-fluid p-0 pt-5">
+              <div className="container-fluid p-0 ">
                 <div className="row">
                   <div className="col-lg-3 col-md-4 col-sm-4 p-0">
                     <MiniListing
@@ -82,10 +82,10 @@ const Listing = ({ filteredItems }) => {
                     />
                   </div>
                   <div className="col-lg-8 col-md-8 col-sm-8 pt-2 px-4">
-                    {/* <MapView
+                    <MapView
                       filteredItems={filteredItems}
                       itemToshow={itemToshow}
-                    /> */}
+                    />
                   </div>
                 </div>
               </div>
@@ -157,7 +157,11 @@ export function Items({ currentItems }) {
                   onClick={() => handleRedirect(item)}
                 >
                   <img
-                    src={item?.imageLink || noImg}
+                    src={
+                      item?.imageLink?.match(/\.(jpeg|jpg|gif|png)$/) !== null
+                        ? item?.imageLink
+                        : noImg
+                    }
                     class="propertyImage"
                     alt={item?.listingAddress}
                   />

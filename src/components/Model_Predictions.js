@@ -14,7 +14,6 @@ const Model_Predictions = () => {
           let tmpList = res?.data?.files?.slice(0)?.reverse();
           if (tmpList?.length > 0) {
             tmpList?.pop(0);
-            tmpList?.pop(1);
           }
           setFiles(tmpList);
           setLoading(false);
