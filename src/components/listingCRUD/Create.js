@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaFileCsv } from "react-icons/fa";
 import Loading from "../Loading";
 import Button from "../../common/Button";
@@ -6,11 +6,14 @@ import MultiStep from "react-multistep";
 import Dropdown from "../../common/Dropdown";
 import { AddressAutofill } from "@mapbox/search-js-react";
 import { instance } from "../../config/config";
+import Papa from "papaparse";
 
 const Create = () => {
   const [file, setFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [columnNames, setColumnNames] = useState([]);
+
   const [successMessage, setSuccessMessage] = useState("");
 
   const [data, setData] = useState({
@@ -49,43 +52,51 @@ const Create = () => {
     rent: 0,
   });
 
-  const [sampleRows, setSampleRows] = useState([
-    "106 Dalkeith Drive, Dartmouth, Nova Scotia, B2W 4E8",
-    "TownHouse",
-    "1558.0",
-    "4.0",
-    "2.0",
-    "0",
-    "1",
-    "0",
-    "0",
-    "0.0",
-    "0",
-    "0",
-    "0",
-    "0",
-    "0",
-    "0",
-  ]);
+  const [sampleData] = useState({
+    expectedColumns: [
+      "property_type",
+      "street_address",
+      "listing_property_type",
+      "square_feet",
+      "imageLink",
+      "bedroom",
+      "bathroom",
+      "heat",
+      "water",
+      "hydro",
+      "furnished",
+      "pet",
+      "smoking",
+      "gym",
+      "parking",
+      "ac",
+      "appliance",
+      "storage",
+      "rent",
+    ],
 
-  const expectedColumns = [
-    "listingAddress",
-    "listingPropertyType",
-    "listingSizeSquareFeet",
-    "bedroomCount",
-    "bathroomCount",
-    "heatUtility",
-    "waterUtility",
-    "hydroUtility",
-    "furnishedUtility",
-    "petPolicy",
-    "smokingPolicy",
-    "gymAmenity",
-    "parkingAmenity",
-    "acAmenity",
-    "applianceAmenity",
-    "storageAmenity",
-  ];
+    expectedRows: [
+      "townhouse",
+      '"106 Dalkeith Drive, Dartmouth, Nova Scotia, B2W 4E8"',
+      "lease",
+      "2000",
+      "https://www.google.com/url?house-image.jpg",
+      "1",
+      "2",
+      "true",
+      "true",
+      "false",
+      "true",
+      "true",
+      "true",
+      "false",
+      "true",
+      "true",
+      "true",
+      "false",
+      "2000",
+    ],
+  });
 
   const [fileState, setFileState] = useState({
     succces: false,
@@ -98,26 +109,72 @@ const Create = () => {
       const fileNameParts = selectedFile.name.split(".");
       const fileExtension = fileNameParts[fileNameParts.length - 1];
       if (fileExtension !== "csv") {
-        setErrorMessage("You can only upload a CSV file.");
+        setFileState({
+          succces: false,
+          message: "You can only upload a CSV file.",
+        });
+        // setErrorMessage("You can only upload a CSV file.");
         return;
       } else {
-        // validateCSVColumns(selectedFile);
-        if (selectedFile) {
-          const currentDate = new Date().toISOString()?.replace(/[-:.]/g, "");
-          const newName = `${selectedFile.name
-            ?.split(".")
-            ?.slice(0, -1)
-            ?.join(".")}_${currentDate}.${selectedFile.name.split(".")?.pop()}`;
-          const renamedFile = new File([selectedFile], newName, {
-            type: selectedFile.type,
-          });
+        validateCSVColumns(selectedFile);
 
-          setFile(renamedFile);
-        }
         setFile(selectedFile);
       }
     }
   };
+
+  const validateCSVColumns = (selectedFile) => {
+    Papa.parse(selectedFile, {
+      header: true,
+      complete: (results) => {
+        if (
+          results &&
+          results?.meta?.fields &&
+          results?.meta?.fields?.length > 0
+        ) {
+          // const columnsToBeIncluded = [];
+          results?.meta?.fields?.map((field, idx) => {
+            if (!columnNames?.includes(field[idx])) {
+              setColumnNames(results?.meta?.fields);
+            }
+          });
+        }
+      },
+      error: (error) => {
+        setFileState({
+          succces: false,
+          message: "Error parsing the CSV file.",
+        });
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (file !== null) {
+      if (columnNames?.length === 0) {
+        return setFileState({
+          succces: false,
+          message: "No CSV header detected.",
+        });
+      }
+      const missingColumns = sampleData?.expectedColumns.filter(
+        (column) => !columnNames.includes(column)
+      );
+
+      if (missingColumns.length === 0) {
+        return setFileState({
+          succces: false,
+          message: "",
+        });
+      } else {
+        return setFileState({
+          succces: false,
+          message:
+            "Some necessary columns are missing. Please Look at the Sample CSV.",
+        });
+      }
+    }
+  }, [columnNames]);
 
   const onSubmit = async (e) => {
     e?.preventDefault();
@@ -128,23 +185,21 @@ const Create = () => {
       formData.append("file", file);
 
       try {
-        // const response = await instance.post("/api/csv_upload", formData);
-        // if (response) {
-        //   setFileState({
-        //     succces: true,
-        //     message: response?.message,
-        //   });
-        //   setErrorMessage("");
-        //   setLoading(false);
-        // }
+        const response = await instance.post("/api/csv_import", formData);
+        if (response) {
+          setFileState({
+            succces: true,
+            message: response?.message,
+          });
+          setLoading(false);
+        }
       } catch (error) {
         setFileState({
           succces: false,
-          message: "",
+          message:
+            "Something went wrong. Could not upload the file, please try again later",
         });
-        setErrorMessage(
-          "Something went wrong. Could not upload the file, please try again later"
-        );
+
         setLoading(false);
       }
     }
@@ -206,15 +261,29 @@ const Create = () => {
       .post("/api/listings", selectedFeature, { timeout: 600000 })
       .then((res) => {
         setLoading(false);
-        console.log(res);
         setSuccessMessage("Listing Added successfully!");
       })
       .catch((err) => {
         setLoading(false);
         setErrorMessage("Something went wrong. We couldn't add the listing.");
-        console.log(err);
       });
-    // console.log("@selectedFeature", selectedFeature);
+  };
+
+  const downloadSampleCSV = () => {
+    const { expectedColumns, expectedRows } = sampleData;
+
+    // Convert to CSV format
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [expectedColumns?.join(","), expectedRows?.join(",")]?.join("\n");
+
+    // Create a link element and trigger download
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "sampleListingData.csv");
+    document.body.appendChild(link);
+    link.click();
   };
 
   return (
@@ -258,16 +327,20 @@ const Create = () => {
             aria-labelledby="pills-home-tab"
           >
             <div className="w-75 mx-auto">
+              {fileState?.succces && <p>{fileState?.message}</p>}
               <p
                 class="border-0 bg-transparent cursor-pointer"
-                data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
+                // data-bs-toggle="modal"
+                // data-bs-target="#exampleModal"
               >
                 <span className="text-primary-color">Note:</span>
                 <span className="fs-9">
                   {" "}
                   Please look at the{" "}
-                  <span className="text-decoration-underline fs-9 text-primary-color text-uppercase">
+                  <span
+                    className="text-decoration-underline fs-9 text-primary-color text-uppercase"
+                    onClick={downloadSampleCSV}
+                  >
                     sample CSV
                   </span>{" "}
                   to know which format to upload the file
@@ -282,15 +355,15 @@ const Create = () => {
                   accept=".csv"
                 />
 
-                {file && !errorMessage && (
+                {file && (
                   <p className="text-primary-color py-3">
                     {" "}
                     <FaFileCsv />
                     {file?.name}
                   </p>
                 )}
-                {errorMessage && (
-                  <p className="text-danger fs-9 mt-3">{errorMessage}</p>
+                {fileState?.message && (
+                  <p className="text-danger fs-9 mt-3">{fileState?.message}</p>
                 )}
               </div>
 
@@ -300,7 +373,7 @@ const Create = () => {
                   onClick={onSubmit}
                   className=" px-2 py-2 bg-primary-color border-0 rounded-0  ms-2 fs-9"
                   disabled={
-                    errorMessage !== "" || file === null || loading
+                    fileState?.message !== "" || file === null || loading
                       ? true
                       : false
                   }
@@ -363,53 +436,6 @@ const Create = () => {
               >
                 Add
               </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="modal fade"
-        id="exampleModal"
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div className="modal-header text-center">
-              <h3 className="fs-8 fw-bold mb-0">
-                The uploaded CSV should be in this particular format.
-              </h3>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <div className="table-responsive px-4">
-                <table className="table table-bordered">
-                  <thead>
-                    <tr>
-                      {expectedColumns &&
-                        expectedColumns?.map((column, idx) => {
-                          return (
-                            <th className=" text-capitalize fs-9">{column}</th>
-                          );
-                        })}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="fs-8 text-secondary">
-                      {sampleRows &&
-                        sampleRows?.map((row, idx) => {
-                          return <td>{row}</td>;
-                        })}
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
             </div>
           </div>
         </div>

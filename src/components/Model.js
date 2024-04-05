@@ -23,43 +23,44 @@ const Model = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const [sampleRows, setSampleRows] = useState([
-    "106 Dalkeith Drive, Dartmouth, Nova Scotia, B2W 4E8",
-    "TownHouse",
-    "1558.0",
-    "4.0",
-    "2.0",
-    "0",
-    "1",
-    "0",
-    "0",
-    "0.0",
-    "0",
-    "0",
-    "0",
-    "0",
-    "0",
-    "0",
-  ]);
-
-  const expectedColumns = [
-    "listingAddress",
-    "listingPropertyType",
-    "listingSizeSquareFeet",
-    "bedroomCount",
-    "bathroomCount",
-    "heatUtility",
-    "waterUtility",
-    "hydroUtility",
-    "furnishedUtility",
-    "petPolicy",
-    "smokingPolicy",
-    "gymAmenity",
-    "parkingAmenity",
-    "acAmenity",
-    "applianceAmenity",
-    "storageAmenity",
-  ];
+  const [sampleData] = useState({
+    expectedColumns: [
+      "listingAddress",
+      "listingPropertyType",
+      "listingSizeSquareFeet",
+      "bedroomCount",
+      "bathroomCount",
+      "heatUtility",
+      "waterUtility",
+      "hydroUtility",
+      "furnishedUtility",
+      "petPolicy",
+      "smokingPolicy",
+      "gymAmenity",
+      "parkingAmenity",
+      "acAmenity",
+      "applianceAmenity",
+      "storageAmenity",
+    ],
+    expectedRows: [
+      '"106 Dalkeith Drive, Dartmouth, Nova Scotia, B2W 4E8"',
+      "TownHouse",
+      "1558.0",
+      "4.0",
+      "2.0",
+      "0",
+      "1",
+      "0",
+      "0",
+      "0.0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+    ],
+  });
 
   const [data, setData] = useState({
     propertyType: ["house", "apartment", "rental"],
@@ -194,7 +195,7 @@ const Model = () => {
         return setErrorMessage("No CSV header detected.");
       }
 
-      const missingColumns = expectedColumns.filter(
+      const missingColumns = sampleData?.expectedColumns.filter(
         (column) => !columnNames.includes(column)
       );
       if (missingColumns.length === 0) {
@@ -260,6 +261,22 @@ const Model = () => {
         console.log(err);
       });
   };
+  const downloadSampleCSV = () => {
+    const { expectedColumns, expectedRows } = sampleData;
+
+    // Convert to CSV format
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [expectedColumns?.join(","), expectedRows?.join(",")]?.join("\n");
+
+    // Create a link element and trigger download
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "sampleModelData.csv");
+    document.body.appendChild(link);
+    link.click();
+  };
   return (
     <>
       {fileState?.succces ? (
@@ -276,16 +293,15 @@ const Model = () => {
                   Upload a CSV with necessary columns
                 </span>{" "}
                 <div className="mt-4">
-                  <p
-                    class="border-0 bg-transparent mt-3 cursor-pointer"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal"
-                  >
+                  <p class="border-0 bg-transparent mt-3 cursor-pointer">
                     <span className="text-primary-color">Note:</span>
                     <span className="fs-9">
                       {" "}
                       Please look at the{" "}
-                      <span className="text-decoration-underline fs-9 text-primary-color text-uppercase">
+                      <span
+                        className="text-decoration-underline fs-9 text-primary-color text-uppercase"
+                        onClick={downloadSampleCSV}
+                      >
                         sample CSV
                       </span>{" "}
                       to know which format to upload the file
@@ -309,55 +325,6 @@ const Model = () => {
                     {errorMessage && (
                       <p className="text-danger fs-9 mt-3">{errorMessage}</p>
                     )}
-                  </div>
-                </div>
-                <div
-                  class="modal fade"
-                  id="exampleModal"
-                  tabindex="-1"
-                  aria-labelledby="exampleModalLabel"
-                  aria-hidden="true"
-                >
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div className="modal-header text-center">
-                        <h3 className="fs-8 fw-bold mb-0">
-                          The uploaded CSV should be in this particular format.
-                        </h3>
-                        <button
-                          type="button"
-                          class="btn-close"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                        ></button>
-                      </div>
-                      <div className="modal-body">
-                        <div className="table-responsive px-4">
-                          <table className="table table-bordered">
-                            <thead>
-                              <tr>
-                                {expectedColumns &&
-                                  expectedColumns?.map((column, idx) => {
-                                    return (
-                                      <th className=" text-capitalize fs-9">
-                                        {column}
-                                      </th>
-                                    );
-                                  })}
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr className="fs-8 text-secondary">
-                                {sampleRows &&
-                                  sampleRows?.map((row, idx) => {
-                                    return <td>{row}</td>;
-                                  })}
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
                 <div className="footer">
@@ -411,6 +378,11 @@ const Model = () => {
                 <Button
                   onClick={onSingleModelSubmit}
                   className=" px-2 py-2 bg-primary-color border-0 rounded-0  ms-2 fs-9 my-3"
+                  disabled={
+                    errorMessage !== "" || file === null || loading
+                      ? true
+                      : false
+                  }
                 >
                   Predict
                 </Button>
@@ -523,6 +495,7 @@ export const Basic = ({
     </>
   );
 };
+
 export const Utilities = ({ selectedFeature, setSelectedFeature }) => {
   const allUtilities = [
     "heatUtility",
@@ -554,7 +527,7 @@ export const Utilities = ({ selectedFeature, setSelectedFeature }) => {
               name={utility}
             />
             <label class="form-check-label text-capitalize fs-8" for={idx}>
-              {utility}
+              {utility?.split("Utility")[0]}
             </label>
           </div>
         );
@@ -562,6 +535,7 @@ export const Utilities = ({ selectedFeature, setSelectedFeature }) => {
     </div>
   );
 };
+
 export const Policy = ({ selectedFeature, setSelectedFeature }) => {
   const allPolicies = ["petPolicy", "smokingPolicy"];
 
@@ -586,7 +560,7 @@ export const Policy = ({ selectedFeature, setSelectedFeature }) => {
               name={policy}
             />
             <label class="form-check-label text-capitalize fs-8" for={idx}>
-              {policy}
+              {policy?.split("Policy")[0]}
             </label>
           </div>
         );
@@ -594,6 +568,7 @@ export const Policy = ({ selectedFeature, setSelectedFeature }) => {
     </div>
   );
 };
+
 export const Amenity = ({ selectedFeature, setSelectedFeature }) => {
   const allAmenities = [
     "gymAmenity",
@@ -625,7 +600,7 @@ export const Amenity = ({ selectedFeature, setSelectedFeature }) => {
               name={amenity}
             />
             <label class="form-check-label text-capitalize fs-8" for={idx}>
-              {amenity}
+              {amenity?.split("Amenity")[0]}
             </label>
           </div>
         );

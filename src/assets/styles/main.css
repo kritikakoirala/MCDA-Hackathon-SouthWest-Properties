@@ -55,6 +55,21 @@ input {
   width: 100%;
 }
 
+.navbar-nav .nav-item {
+  /* display: flex;
+  justify-content: space-around; */
+  padding: 0 1em !important;
+}
+
+.navbar-nav .nav-item a {
+  color: #000;
+
+  text-decoration: none !important;
+}
+
+.navbar-nav .nav-item .active {
+  color: var(--primary-color) !important;
+}
 .text-primary-color {
   color: var(--primary-color);
 }
@@ -95,6 +110,10 @@ input {
   border-bottom: 1px solid var(--primary-color) !important;
   border-radius: 0px !important;
   cursor: pointer;
+}
+
+.active {
+  color: #000 !important;
 }
 
 .form-select option {

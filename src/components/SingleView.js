@@ -7,9 +7,12 @@ import { FaLocationDot } from "react-icons/fa6";
 import { instance } from "../config/config";
 import { MdLocalGroceryStore, MdMovie, MdEmergencyShare } from "react-icons/md";
 import { GiBookshelf, GiCrimeSceneTape } from "react-icons/gi";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import {
+  CircularProgressbar,
+  buildStyles,
+  CircularProgressbarWithChildren,
+} from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import noImg from "../assets/img/no-img.jpg";
@@ -108,19 +111,19 @@ const SingleView = () => {
         </div>
         <span className="text-capitalize fs-9">{type} Score</span>
 
-        <div class="" style={{ width: 60, height: 60 }}>
+        <div class="" style={{ width: 60, height: 60, fontWeight: "bold" }}>
           <CircularProgressbar
             value={value}
-            text={type === "crime" ? item : value}
+            text={type === "crime" ? item?.replace("_", " ") : value}
             styles={buildStyles({
               // Text size
-              textSize: type === "crime" ? "20px" : "26px",
-
+              textSize: type === "crime" ? "20px" : "22px",
+              fontWeight: "bold",
               // Colors
               pathColor:
                 type === "crime" ? (value > 50 ? "#c1cd23" : "red") : "#c1cd23",
               textColor:
-                type === "crime" ? (value > 50 ? "#c1cd23" : "red") : "#c1cd23",
+                type === "crime" ? (value > 50 ? "#000" : "red") : "#000",
             })}
           />
         </div>

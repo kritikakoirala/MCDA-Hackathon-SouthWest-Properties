@@ -7,7 +7,7 @@ const Home = () => {
   const propertyUrl =
     "https://public.tableau.com/shared/H68Y6KJK6?:display_count=n&:origin=viz_share_link";
   const parkingUrl =
-    "https://public.tableau.com/views/CommonDashboard/Dashboard2?:language=en-US&publish=yes&:sid=&:display_count=n&:origin=viz_share_link";
+    "https://public.tableau.com/views/CommonDashboard/ParkingDashboard?:language=en-US&publish=yes&:sid=&:display_count=n&:origin=viz_share_link";
   const insightsUrl =
     "https://public.tableau.com/views/CommonDashboard/InsightsDashboard?:language=en-US&publish=yes&:sid=&:display_count=n&:origin=viz_share_link";
 

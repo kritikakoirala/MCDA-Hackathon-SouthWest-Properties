@@ -1,6 +1,8 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import logo from "../assets/img/Logo.png";
+import logo1 from "../assets/img/logo-1.jpeg";
+import logo2 from "../assets/img/logo-2.jpeg";
 
 const Navbar = () => {
   return (
@@ -18,36 +20,46 @@ const Navbar = () => {
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse " id="navbarTogglerDemo01">
-          <Link className="navbar-brand" to={"/"}>
-            <img className="img-fluid" src={logo} />
+          <Link className="navbar-brand mt-0 pt-0" to={"/"}>
+            <img className="img-fluid" src={logo1} />
             {/* <h2>SW</h2>
             <p>Live.Shop.Work.Play</p> */}
           </Link>
           <ul class="navbar-nav ps-xs-0 ps-sm-5 mb-2 mb-lg-0">
             <li class="nav-item">
-              <Link class="nav-link active" aria-current="page" to="/">
+              <NavLink
+                class="nav-link"
+                activeClassName="active"
+                // aria-current="page"
+                exact
+                to="/"
+              >
                 Home
-              </Link>
+              </NavLink>
             </li>
             <li class="nav-item">
-              <Link class="nav-link" to="/properties">
+              <NavLink class="nav-link" to="/properties">
                 Properties
-              </Link>
+              </NavLink>
             </li>
             <li class="nav-item">
-              <Link class="nav-link" to="/model">
+              <NavLink class="nav-link" activeClassName="active" to="/model">
                 Rent Forecast
-              </Link>
+              </NavLink>
             </li>
             <li class="nav-item">
-              <Link class="nav-link" to="/model/results">
+              <NavLink
+                class="nav-link"
+                activeClassName="active"
+                to="/model/results"
+              >
                 Forecast Results
-              </Link>
+              </NavLink>
             </li>
             <li class="nav-item">
-              <Link class="nav-link" to="/builders">
+              <NavLink class="nav-link" activeClassName="active" to="/builders">
                 Builders
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </div>

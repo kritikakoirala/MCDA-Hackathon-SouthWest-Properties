@@ -69,15 +69,15 @@ const Model_Predictions = () => {
   return (
     <>
       <div className="container mt-3 prediction">
-        <h5 className="my-4 ">
+        <h6 className="my-4 fw-bold">
           Results of all the files you've uploaded. You can download the result
           by clicking on the filename
-        </h5>
+        </h6>
         <div className="table-responsive">
           <table class="table table-bordered fs-9">
             <thead>
               <tr>
-                <th scope="col">#</th>
+                <th scope="col">S.N</th>
                 <th scope="col">Date</th>
                 <th scope="col">Result</th>
               </tr>
