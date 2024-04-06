@@ -31,16 +31,17 @@ const Builders = () => {
     },
   ]);
 
-  //   useEffect(() => {
-  //     instance
-  //       .get("/api/builders")
-  //       .then((res) => {
-  //         console.log(res);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       });
-  //   }, []);
+  useEffect(() => {
+    instance.get("/api/builders")
+        .then((res) => {
+            console.log(res.data); // Assuming the response data is the array you want to display
+            setData(res.data); // Update the state with the fetched data
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+}, []);
+
   return (
     <>
       <div className="container pt-5">
