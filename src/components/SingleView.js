@@ -53,7 +53,10 @@ const SingleView = () => {
         <div className="d-flex">
           {item &&
             Object.keys(item)?.map((field, idx) => {
-              if (field?.includes(label) && item[field] === "1") {
+              if (
+                field?.includes(label) &&
+                (item[field] === "True" || item[field] === "1")
+              ) {
                 const matches = field.match(/([a-zA-Z]+)([A-Z][a-z]+)/);
                 perks = matches[1];
                 return (

@@ -176,35 +176,6 @@ const Create = () => {
     }
   }, [columnNames]);
 
-  const onSubmit = async (e) => {
-    e?.preventDefault();
-    if (!errorMessage) {
-      setLoading(true);
-
-      const formData = new FormData();
-      formData.append("file", file);
-
-      try {
-        const response = await instance.post("/api/csv_import", formData);
-        if (response) {
-          setFileState({
-            succces: true,
-            message: response?.message,
-          });
-          setLoading(false);
-        }
-      } catch (error) {
-        setFileState({
-          succces: false,
-          message:
-            "Something went wrong. Could not upload the file, please try again later",
-        });
-
-        setLoading(false);
-      }
-    }
-  };
-
   const steps = [
     {
       title: "Basic Info",
@@ -251,6 +222,35 @@ const Create = () => {
       ),
     },
   ];
+
+  const onSubmit = async (e) => {
+    e?.preventDefault();
+    if (!errorMessage) {
+      setLoading(true);
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await instance.post("/api/csv_import", formData);
+        if (response) {
+          setFileState({
+            succces: true,
+            message: response?.message,
+          });
+          setLoading(false);
+        }
+      } catch (error) {
+        setFileState({
+          succces: false,
+          message:
+            "Something went wrong. Could not upload the file, please try again later",
+        });
+
+        setLoading(false);
+      }
+    }
+  };
 
   const onSingleModelSubmit = (e) => {
     e.preventDefault();
@@ -327,7 +327,9 @@ const Create = () => {
             aria-labelledby="pills-home-tab"
           >
             <div className="w-75 mx-auto">
-              {fileState?.succces && <p>{fileState?.message}</p>}
+              {fileState?.succces && (
+                <p className="text-success fs-9">{fileState?.message}</p>
+              )}
               <p
                 class="border-0 bg-transparent cursor-pointer"
                 // data-bs-toggle="modal"
@@ -432,7 +434,7 @@ const Create = () => {
               <Button
                 onClick={onSingleModelSubmit}
                 className="justify-content-center px-2 py-2 bg-primary-color border-0 rounded-0  ms-2 fs-9 my-3"
-                disabled={loading ? true : false}
+                disabled={loading || successMessage !== "" ? true : false}
               >
                 Add
               </Button>

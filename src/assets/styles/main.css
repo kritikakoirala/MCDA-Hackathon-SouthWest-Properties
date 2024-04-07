@@ -7,7 +7,7 @@ body {
   --primary-color: #c1cd23;
   --secondary-color: #e68f1a;
   --tertiary-color: #00aeef;
-  --gray-color: rgb(242, 242, 242, 0.3);
+  --gray-color: rgb(242, 242, 242, 0.2);
 }
 
 a,
@@ -63,13 +63,13 @@ input {
 
 .navbar-nav .nav-item a {
   color: #000;
-
   text-decoration: none !important;
 }
 
 .navbar-nav .nav-item .active {
   color: var(--primary-color) !important;
 }
+
 .text-primary-color {
   color: var(--primary-color);
 }

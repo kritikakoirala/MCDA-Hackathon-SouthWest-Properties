@@ -6,7 +6,7 @@ import Navbar from "./common/Navbar";
 import "./assets/styles/main.css";
 import SingleView from "./components/SingleView";
 import Properties from "./components/Properties";
-import Model from "./components/Model";
+import Model, { ModelTrainingState } from "./components/Model";
 import { useEffect } from "react";
 import Model_Predictions from "./components/Model_Predictions";
 import Create from "./components/listingCRUD/Create";
@@ -42,6 +42,8 @@ function App() {
         <Route path="/model/results" element={<Model_Predictions />} />
         <Route path="/listings/create" element={<Create />} />
         <Route path="/builders" element={<Builders />} />
+
+        <Route path="/prediction/status" element={<ModelTrainingState />} />
       </Routes>
     </>
   );

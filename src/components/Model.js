@@ -11,6 +11,8 @@ import { instance } from "../config/config";
 import Message from "../common/Message";
 import { setSelectionRange } from "@testing-library/user-event/dist/utils";
 import Loading from "./Loading";
+import { useNavigate, useLocation } from "react-router-dom";
+import { GiTakeMyMoney } from "react-icons/gi";
 
 const Model = () => {
   const [file, setFile] = useState(null);
@@ -20,7 +22,8 @@ const Model = () => {
     succces: false,
     message: "",
   });
-
+  const [succcesMessage, setSuccessMessage] = useState(null);
+  const [modelLoading, setModalLoading] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [sampleData] = useState({
@@ -63,7 +66,7 @@ const Model = () => {
   });
 
   const [data, setData] = useState({
-    propertyType: ["house", "apartment", "rental"],
+    propertyType: ["townhouse", "apartment"],
     bedroom: ["1", "2", "3", "4+"],
     bath: ["1", "2", "3", "4+"],
     utility: [],
@@ -240,27 +243,38 @@ const Model = () => {
     }
   };
 
+  const navigate = useNavigate();
+
   const onSingleModelSubmit = (e) => {
     e.preventDefault();
+    setModalLoading(true);
+
+    // setTimeout(() => {}, [40000]);
 
     instance
       .post("/api/rent-forecast", selectedFeature)
       .then((response) => {
         if (response) {
-          setFileState({
-            succces: true,
-            message: response?.message,
+          console.log(response);
+          setModalLoading(false);
+
+          navigate("/prediction/status", {
+            state: {
+              state: modelLoading,
+              message: response?.data,
+            },
           });
-          setLoading(false);
         }
       })
       .catch((err) => {
+        setModalLoading(false);
         setErrorMessage(
           "Something went wrong. Could not upload the file, please try again later"
         );
         console.log(err);
       });
   };
+
   const downloadSampleCSV = () => {
     const { expectedColumns, expectedRows } = sampleData;
 
@@ -277,9 +291,18 @@ const Model = () => {
     document.body.appendChild(link);
     link.click();
   };
+
   return (
     <>
-      {fileState?.succces ? (
+      {modelLoading ? (
+        <div className="d-flex flex-column justify-content-center align-items-center pt-5 mt-5">
+          <Loading />
+          <p className="text-center fs-9 pt-2">
+            We are working on predicting your rent. It might take a while.
+            Please bear with us.
+          </p>
+        </div>
+      ) : fileState?.succces ? (
         <Message message={fileState?.message} />
       ) : (
         <div className="landingPage my-5">
@@ -378,11 +401,7 @@ const Model = () => {
                 <Button
                   onClick={onSingleModelSubmit}
                   className=" px-2 py-2 bg-primary-color border-0 rounded-0  ms-2 fs-9 my-3"
-                  disabled={
-                    errorMessage !== "" || file === null || loading
-                      ? true
-                      : false
-                  }
+                  disabled={errorMessage !== "" || loading ? true : false}
                 >
                   Predict
                 </Button>
@@ -605,6 +624,40 @@ export const Amenity = ({ selectedFeature, setSelectedFeature }) => {
           </div>
         );
       })}
+    </div>
+  );
+};
+
+export const ModelTrainingState = () => {
+  const location = useLocation();
+  const { state, message } = location?.state;
+
+  return (
+    <div className="w-100 bg-white mx-auto vh-70 pt-5 mt-5">
+      {state ? (
+        <div className="d-flex flex-column justify-content-center align-items-center">
+          <Loading />
+          <p className="text-center fs-9 pt-2">
+            We are working on predicting your rent. It might take a while.
+            Please bear with us.
+          </p>
+        </div>
+      ) : (
+        <div>
+          {message?.message !== "" && (
+            <div className="d-flex flex-column justify-content-center align-items-center">
+              <GiTakeMyMoney fontSize={100} />
+
+              <p className="fs-9 text-center pt-2 ">
+                The predicted rent is:{" "}
+                <span className="text-primary-color">
+                  ${message?.predictedRent}
+                </span>
+              </p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

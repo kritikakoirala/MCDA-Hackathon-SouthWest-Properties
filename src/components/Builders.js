@@ -4,43 +4,19 @@ import { FaLocationDot, FaRegBuilding } from "react-icons/fa6";
 
 import { instance } from "../config/config";
 const Builders = () => {
-  const [data, setData] = useState([
-    {
-      projectName: "Navy Lane",
-      projectLocation: "Spring Garden Road",
-      projectStatus: "Under Planning",
-      projectBuilder: "Dexel",
-    },
-    {
-      projectName: "Builder 1",
-      projectLocation: "Location 1",
-      projectStatus: "Under Planning",
-      projectBuilder: "Dexel",
-    },
-    {
-      projectName: "Builder 1",
-      projectLocation: "Location 1",
-      projectStatus: "Under Planning",
-      projectBuilder: "Dexel",
-    },
-    {
-      projectName: "Builder 1",
-      projectLocation: "Location 1",
-      projectStatus: "Under Planning",
-      projectBuilder: "Urban Capital    ",
-    },
-  ]);
+  const [data, setData] = useState();
 
   useEffect(() => {
-    instance.get("/api/builders")
-        .then((res) => {
-            console.log(res.data); // Assuming the response data is the array you want to display
-            setData(res.data); // Update the state with the fetched data
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-}, []);
+    instance
+      .get("/api/builders")
+      .then((res) => {
+        // Assuming the response data is the array you want to display
+        setData(res.data); // Update the state with the fetched data
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   return (
     <>
@@ -52,7 +28,7 @@ const Builders = () => {
                 <div className="col-lg-4 col-md-4 col-sm-12 my-3" key={idx}>
                   <div className="builder-card border-0 p-2">
                     <div className="d-flex justify-content-between align-items-center">
-                      <h5>{build?.projectName}</h5>
+                      <h6 className="fw-bold">{build?.projectName}</h6>
                       <span
                         class={`badge rounded-pill bg-success mx-2 my-1 px-3 py-2 `}
                       >
@@ -72,7 +48,9 @@ const Builders = () => {
               );
             })
           ) : (
-            <Loading />
+            <div className="w-100 d-flex justify-content-center align-items-center">
+              <Loading />
+            </div>
           )}
         </div>
       </div>

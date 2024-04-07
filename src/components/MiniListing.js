@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
+import noImg from "../assets/img/no-img.jpg";
 
 const MiniListing = ({ filteredItems, handleMouseEvent }) => {
   return (
@@ -82,7 +83,11 @@ export const MiniItems = ({ currentItems, handleMouseEvent }) => {
               onMouseOut={() => handleMouseEvent({})}
             >
               <img
-                src={item?.imageLink}
+                src={
+                  item?.imageLink?.match(/\.(jpeg|jpg|gif|png)$/) !== null
+                    ? item?.imageLink
+                    : noImg
+                }
                 class=" me-3 border-0 "
                 alt={item?.listingAddress}
               />

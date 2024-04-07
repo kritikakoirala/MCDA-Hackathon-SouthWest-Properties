@@ -21,7 +21,7 @@ const Navbar = () => {
         </button>
         <div class="collapse navbar-collapse " id="navbarTogglerDemo01">
           <Link className="navbar-brand mt-0 pt-0" to={"/"}>
-            <img className="img-fluid" src={logo1} />
+            <img className="img-fluid" src={logo} />
             {/* <h2>SW</h2>
             <p>Live.Shop.Work.Play</p> */}
           </Link>
@@ -43,7 +43,12 @@ const Navbar = () => {
               </NavLink>
             </li>
             <li class="nav-item">
-              <NavLink class="nav-link" activeClassName="active" to="/model">
+              <NavLink
+                class="nav-link"
+                activeClassName="active"
+                end
+                to="/model"
+              >
                 Rent Forecast
               </NavLink>
             </li>
