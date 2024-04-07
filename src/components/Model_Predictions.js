@@ -11,11 +11,7 @@ const Model_Predictions = () => {
       .get("/api/forecast/results")
       .then((res) => {
         if (res?.data && res?.data?.files?.length > 0) {
-          let tmpList = res?.data?.files?.slice(0)?.reverse();
-          if (tmpList?.length > 0) {
-            tmpList?.pop(0);
-          }
-          setFiles(tmpList);
+          setFiles(res.data.files.reverse());
           setLoading(false);
         }
       })
@@ -25,21 +21,12 @@ const Model_Predictions = () => {
       });
   }, []);
 
-  const getDate = (fileName) => {
-    const datePart = fileName?.split("_")[1]?.slice(0, 8); // Extracts '20240327'
-    const timePart = fileName?.split("_")[1]?.slice(9, 15); // Extracts '184308'
-    const formattedDate = new Date(
-      `${datePart?.slice(0, 4)}-${datePart?.slice(4, 6)}-${datePart?.slice(
-        6,
-        8
-      )}T${timePart?.slice(0, 2)}:${timePart?.slice(2, 4)}:${timePart?.slice(
-        4,
-        6
-      )}`
-    );
-    return formattedDate?.toLocaleString();
+  const getDate = (filePath) => {
+    const datePart = filePath.split('/')[1].split('.')[0]; // Extracts '2024-04-07' from "modelOutput/2024-04-07.csv"
+    const formattedDate = new Date(datePart);
+    return formattedDate.toLocaleDateString(); // Adjust the formatting as needed
   };
-
+  
   const downloadFile = (file) => {
     setLoading(true);
 

@@ -250,6 +250,7 @@ const Model = () => {
     setModalLoading(true);
 
     // setTimeout(() => {}, [40000]);
+    instance.defaults.timeout = 60000;
 
     instance
       .post("/api/rent-forecast", selectedFeature)
