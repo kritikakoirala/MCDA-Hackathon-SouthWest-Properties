@@ -236,7 +236,7 @@ const Create = () => {
         if (response) {
           setFileState({
             succces: true,
-            message: response?.message,
+            message: "File uploaded Successfully!",
           });
           setLoading(false);
         }

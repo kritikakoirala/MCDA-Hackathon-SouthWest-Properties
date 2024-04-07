@@ -11,7 +11,10 @@ const Model_Predictions = () => {
       .get("/api/forecast/results")
       .then((res) => {
         if (res?.data && res?.data?.files?.length > 0) {
-          setFiles(res.data.files.reverse());
+          const cleanedFiles = res?.data?.files
+            ?.filter((file) => file?.endsWith(".csv")) // Filter only CSV files
+            ?.map((file) => file?.replace("Model/Output/", ""));
+          setFiles(cleanedFiles);
           setLoading(false);
         }
       })
@@ -21,12 +24,16 @@ const Model_Predictions = () => {
       });
   }, []);
 
-  const getDate = (filePath) => {
-    const datePart = filePath.split('/')[1].split('.')[0]; // Extracts '2024-04-07' from "modelOutput/2024-04-07.csv"
-    const formattedDate = new Date(datePart);
-    return formattedDate.toLocaleDateString(); // Adjust the formatting as needed
+  const getDate = (filename) => {
+    const parts = filename.split("/");
+
+    const date_with_extension = parts[1];
+
+    const date_part = date_with_extension.split(".")[0];
+
+    return date_part;
   };
-  
+
   const downloadFile = (file) => {
     setLoading(true);
 
@@ -74,24 +81,27 @@ const Model_Predictions = () => {
                 <div className="d-flex justify-content-center align-items-center my-2 w-100">
                   <Loading />
                 </div>
+              ) : files?.length > 0 ? (
+                files?.map((file, idx) => {
+                  return (
+                    <tr key={idx}>
+                      <td>{idx + 1}</td>
+                      <td>{getDate(file)}</td>
+                      <td
+                        className="cursor-pointer text-decoration-underline fileName"
+                        onClick={() => downloadFile(file)}
+                      >
+                        {file}
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
-                files
-                  ?.slice(0)
-                  ?.reverse()
-                  ?.map((file, idx) => {
-                    return (
-                      <tr key={idx}>
-                        <td>{idx + 1}</td>
-                        <td>{getDate(file)}</td>
-                        <td
-                          className="cursor-pointer text-decoration-underline fileName"
-                          onClick={() => downloadFile(file)}
-                        >
-                          {file}
-                        </td>
-                      </tr>
-                    );
-                  })
+                <tr>
+                  <td className="fs-9">
+                    No result yet! Please wait for a while
+                  </td>
+                </tr>
               )}
               <tr></tr>
             </tbody>
