@@ -5,11 +5,11 @@ const Home = () => {
   const [activeTab, setActiveTab] = useState("home");
 
   const propertyUrl =
-    "https://public.tableau.com/shared/H68Y6KJK6?:display_count=n&:origin=viz_share_link";
+    "https://public.tableau.com/views/CompetitorAnalysis_17121029904210/CompetitorAnalysis?:language=en-US&publish=yes&:sid=&:display_count=n&:origin=viz_share_link";
   const parkingUrl =
     "https://public.tableau.com/views/CommonDashboard/ParkingDashboard?:language=en-US&publish=yes&:sid=&:display_count=n&:origin=viz_share_link";
   const insightsUrl =
-    "https://public.tableau.com/views/CommonDashboard/InsightsDashboard?:language=en-US&publish=yes&:sid=&:display_count=n&:origin=viz_share_link";
+    "https://public.tableau.com/views/CommonDashboard/InsightDashboard?:language=en-US&publish=yes&:sid=&:display_count=n&:origin=viz_share_link";
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -23,7 +23,7 @@ const Home = () => {
             className={`nav-link ${activeTab === "home" ? "active" : ""}`}
             onClick={() => handleTabChange("home")}
           >
-            Property Listing
+            Competitor Analysis
           </button>
         </li>
         <li className="nav-item" role="presentation">
@@ -52,7 +52,7 @@ const Home = () => {
           role="tabpanel"
         >
           {activeTab === "home" && (
-            <div className="tableau-container 100vh">
+            <div className="tableau-container">
               <TableauEmbed sourceUrl={propertyUrl} />
             </div>
           )}
@@ -65,7 +65,7 @@ const Home = () => {
           role="tabpanel"
         >
           {activeTab === "profile" && (
-            <div className="tableau-container 100vh">
+            <div className="tableau-container">
               <TableauEmbed sourceUrl={parkingUrl} />
             </div>
           )}
@@ -78,7 +78,7 @@ const Home = () => {
           role="tabpanel"
         >
           {activeTab === "contact" && (
-            <div className="tableau-container 100vh">
+            <div className="tableau-container">
               <TableauEmbed sourceUrl={insightsUrl} />
             </div>
           )}
