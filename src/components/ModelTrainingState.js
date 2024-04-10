@@ -67,21 +67,21 @@ const ModelTrainingState = ({ state, message }) => {
           className={"form-control"}
           placeholder="Property Type"
           name="listingPropertyType"
-          value={feature?.listingPropertyType || ""}
+          value={"Property Type: " + feature?.listingPropertyType || ""}
           disabled={true}
         />
         <input
           className={"mx-2 form-control"}
           placeholder="Bedroom"
           name="bedroomCount"
-          value={feature?.bedroomCount || ""}
+          value={"Bedroom: " + feature?.bedroomCount || ""}
           disabled={true}
         />
         <input
           className={"form-control"}
           placeholder="Baths"
           name="bathroomCount"
-          value={feature?.bathroomCount || ""}
+          value={"Bath: " + feature?.bathroomCount || ""}
           disabled={true}
         />
       </div>
@@ -91,17 +91,16 @@ const ModelTrainingState = ({ state, message }) => {
             className={"form-control"}
             placeholder="Address"
             name="listingAddress"
-            value={feature?.listingAddress || ""}
+            value={"Address: " + feature?.listingAddress || ""}
             disabled={true}
           />
         </div>
-
+        {console.log(feature)}
         <input
-          className="form-control w-25"
+          className="form-control w-50"
           placeholder="Listing Sq ft"
-          type="number"
           name="listingSizeSquareFeet"
-          value={feature?.listingSizeSquareFeet || ""}
+          value={"Sq Ft: " + feature?.listingSizeSquareFeet || ""}
           disabled={true}
         />
       </div>

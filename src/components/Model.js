@@ -246,8 +246,6 @@ const Model = () => {
   const [showPrediction, setShowPrediction] = useState(false);
   const onSingleModelSubmit = (e) => {
     e.preventDefault();
-
-    // navigate("/prediction/status");
     setModalLoading(true);
 
     instance.defaults.timeout = 700000;
@@ -256,7 +254,6 @@ const Model = () => {
       .post("/api/rent-forecast", selectedFeature)
       .then((response) => {
         if (response) {
-          console.log(response);
           setModalLoading(false);
 
           navigate("/prediction/status", {
