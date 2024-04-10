@@ -17,8 +17,8 @@ const Create = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   const [data, setData] = useState({
-    property_type: ["townhouse", "apartment"],
-    listing_property_type: ["lease"],
+    property_type: ["TownHouse", "Apartment"],
+    listing_property_type: ["Management", "Rental"],
     bedroom: ["1", "2", "3", "4+"],
     bath: ["1", "2", "3", "4+"],
     utility: [],
@@ -99,7 +99,7 @@ const Create = () => {
   });
 
   const [fileState, setFileState] = useState({
-    succces: false,
+    succces: null,
     message: "",
   });
 
@@ -327,9 +327,15 @@ const Create = () => {
             aria-labelledby="pills-home-tab"
           >
             <div className="w-75 mx-auto">
-              {fileState?.succces && (
-                <p className="text-success fs-9">{fileState?.message}</p>
-              )}
+              {
+                <p
+                  className={`fs-9 ${
+                    fileState?.succces === true ? "text-success" : "text-danger"
+                  }`}
+                >
+                  {fileState?.message}
+                </p>
+              }
               <p
                 class="border-0 bg-transparent cursor-pointer"
                 // data-bs-toggle="modal"
@@ -363,9 +369,6 @@ const Create = () => {
                     <FaFileCsv />
                     {file?.name}
                   </p>
-                )}
-                {fileState?.message && (
-                  <p className="text-danger fs-9 mt-3">{fileState?.message}</p>
                 )}
               </div>
 

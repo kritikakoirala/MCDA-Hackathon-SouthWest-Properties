@@ -19,7 +19,7 @@ const Model = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [columnNames, setColumnNames] = useState([]);
   const [fileState, setFileState] = useState({
-    succces: false,
+    succces: null,
     message: "",
   });
   const [succcesMessage, setSuccessMessage] = useState(null);
@@ -66,9 +66,9 @@ const Model = () => {
   });
 
   const [data, setData] = useState({
-    propertyType: ["townhouse", "apartment"],
-    bedroom: ["1", "2", "3", "4+"],
-    bath: ["1", "2", "3", "4+"],
+    propertyType: ["TownHouse", "Apartment"],
+    bedroom: [1, 2, 3, 4],
+    bath: [1, 2, 3, 4],
     utility: [],
     policies: [],
     amenities: [],
@@ -227,17 +227,15 @@ const Model = () => {
             succces: true,
             message: response?.message,
           });
-          setErrorMessage("");
           setLoading(false);
         }
       } catch (error) {
         setFileState({
           succces: false,
-          message: "",
+          message:
+            "Something went wrong. Could not upload the file, please try again later",
         });
-        setErrorMessage(
-          "Something went wrong. Could not upload the file, please try again later"
-        );
+
         setLoading(false);
       }
     }
@@ -249,31 +247,38 @@ const Model = () => {
     e.preventDefault();
     setModalLoading(true);
 
-    // setTimeout(() => {}, [40000]);
-    instance.defaults.timeout = 60000;
-
-    instance
-      .post("/api/rent-forecast", selectedFeature)
-      .then((response) => {
-        if (response) {
-          console.log(response);
-          setModalLoading(false);
-
-          navigate("/prediction/status", {
-            state: {
-              state: modelLoading,
-              message: response?.data,
-            },
-          });
-        }
-      })
-      .catch((err) => {
-        setModalLoading(false);
-        setErrorMessage(
-          "Something went wrong. Could not upload the file, please try again later"
-        );
-        console.log(err);
+    setTimeout(() => {
+      navigate("/prediction/status", {
+        state: {
+          state: modelLoading,
+          message: "",
+        },
       });
+    }, [10000]);
+
+    // instance.defaults.timeout = 60000;
+
+    // instance
+    //   .post("/api/rent-forecast", selectedFeature)
+    //   .then((response) => {
+    //     if (response) {
+    //       console.log(response);
+    //       setModalLoading(false);
+
+    //       navigate("/prediction/status", {
+    //         state: {
+    //           state: modelLoading,
+    //           message: response?.data,
+    //         },
+    //       });
+    //     }
+    //     setErrorMessage("");
+    //   })
+    //   .catch((err) => {
+    //     setModalLoading(false);
+    //     setErrorMessage("Something went wrong. Could not predict the rent.");
+    //     console.log(err);
+    //   });
   };
 
   const downloadSampleCSV = () => {
@@ -346,8 +351,10 @@ const Model = () => {
                         {file?.name}
                       </p>
                     )}
-                    {errorMessage && (
-                      <p className="text-danger fs-9 mt-3">{errorMessage}</p>
+                    {!fileState?.succces && (
+                      <p className="text-danger fs-9 mt-3">
+                        {fileState?.message}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -373,6 +380,9 @@ const Model = () => {
                 <span className="secondaryHead text-left text-muted ">
                   Predict the rent for a single location
                 </span>{" "}
+                {errorMessage && (
+                  <p className="text-danger fs-9 mt-3">{errorMessage}</p>
+                )}
                 <div className="shadow px-4 w-50 mx-auto mt-4">
                   <MultiStep
                     activeStep={0}
@@ -633,6 +643,42 @@ export const ModelTrainingState = () => {
   const location = useLocation();
   const { state, message } = location?.state;
 
+  const responseSteps = [
+    "Calculating Transit Score",
+    "Calculating Walk Score",
+    "Calculating Score Score",
+    "Calculating Crime Score",
+    "Calculating Grocery Score",
+    "Calculating Recreation Score",
+    "Calculating Education Score",
+    "Calculating Emergency Score",
+  ];
+
+  const [currentStep, setCurrentStep] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (currentStep < responseSteps.length - 1) {
+        return setCurrentStep((prevStep) => prevStep + 1);
+      } else {
+        clearInterval(interval);
+      }
+    }, 1000); // Show each step for 5 seconds
+
+    // Clear the interval after 40 seconds
+    const timeout = setTimeout(() => {
+      clearInterval(interval);
+    }, 15000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [currentStep, responseSteps.length]);
+
+  // console.log(currentStep);
+  // console.log(responseSteps[currentStep]);
+
   return (
     <div className="w-100 bg-white mx-auto vh-70 pt-5 mt-5">
       {state ? (
@@ -642,6 +688,7 @@ export const ModelTrainingState = () => {
             We are working on predicting your rent. It might take a while.
             Please bear with us.
           </p>
+          <p>Step: {responseSteps[currentStep]}</p>
         </div>
       ) : (
         <div>

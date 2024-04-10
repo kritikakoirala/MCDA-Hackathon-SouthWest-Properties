@@ -16,7 +16,7 @@ const Dropdown = ({ options, className, title, onChange, name, value }) => {
             return (
               <>
                 <option value={option} className="text-capitalize">
-                  {option?.replace(/_/g, " ")}
+                  {option}
                 </option>
               </>
             );
