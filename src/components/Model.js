@@ -66,9 +66,9 @@ const Model = () => {
   });
 
   const [data, setData] = useState({
-    propertyType: ["townhouse", "apartment"],
-    bedroom: ["1", "2", "3", "4+"],
-    bath: ["1", "2", "3", "4+"],
+    propertyType: ["TownHouse", "Apartment"],
+    bedroom: ["1", "2", "3", "4"],
+    bath: ["1", "2", "3", "4"],
     utility: [],
     policies: [],
     amenities: [],
