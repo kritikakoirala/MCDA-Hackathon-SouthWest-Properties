@@ -97,7 +97,7 @@ const SingleView = () => {
         : "";
     return (
       <div className="d-flex flex-column justify-content-start align-items-center ms-4 mb-3">
-        <div className="scoreIcon">
+        <div className="scoreIcon mb-1">
           {label === "grocery" ? (
             <MdLocalGroceryStore />
           ) : label === "recreation" ? (
@@ -112,7 +112,7 @@ const SingleView = () => {
             ""
           )}
         </div>
-        <span className="text-capitalize fs-9">{type} Score</span>
+        <span className="text-capitalize fs-9 mb-2">{type} Score</span>
 
         <div class="" style={{ width: 60, height: 60, fontWeight: "bold" }}>
           <CircularProgressbar
@@ -248,7 +248,7 @@ const SingleView = () => {
                         |<span> {item?.listingSizeSquareFeet} SF </span>
                       </p>
 
-                      <div className="d-flex justify-content-between align-items-center w-75 mx-auto">
+                      <div className="d-flex justify-content-between align-items-center mx-auto">
                         {getAllScores("walking", item?.walkScore)}
                         {getAllScores("bike", item?.bikeScore)}
                         {getAllScores("transit", item?.transitScore)}

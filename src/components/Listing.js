@@ -15,6 +15,7 @@ const Listing = ({ filteredItems }) => {
     mode: "list",
     checked: true,
   });
+
   const handleChange = (e) => {
     setViewMode({
       mode: !viewMode?.checked ? "list" : "map",

@@ -6,11 +6,12 @@ import Navbar from "./common/Navbar";
 import "./assets/styles/main.css";
 import SingleView from "./components/SingleView";
 import Properties from "./components/Properties";
-import Model, { ModelTrainingState } from "./components/Model";
+import Model from "./components/Model";
 import { useEffect } from "react";
 import Model_Predictions from "./components/Model_Predictions";
 import Create from "./components/listingCRUD/Create";
 import Builders from "./components/Builders";
+import ModelTrainingState from "./components/ModelTrainingState";
 
 function App() {
   const successCallback = (position) => {

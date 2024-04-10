@@ -10,9 +10,9 @@ import MultiStep from "react-multistep";
 import { instance } from "../config/config";
 import Message from "../common/Message";
 import { setSelectionRange } from "@testing-library/user-event/dist/utils";
-import Loading from "./Loading";
 import { useNavigate, useLocation } from "react-router-dom";
-import { GiTakeMyMoney } from "react-icons/gi";
+import Loading from "./Loading";
+import ModelTrainingState from "./ModelTrainingState";
 
 const Model = () => {
   const [file, setFile] = useState(null);
@@ -243,42 +243,37 @@ const Model = () => {
 
   const navigate = useNavigate();
 
+  const [showPrediction, setShowPrediction] = useState(false);
   const onSingleModelSubmit = (e) => {
     e.preventDefault();
+
+    // navigate("/prediction/status");
     setModalLoading(true);
 
-    setTimeout(() => {
-      navigate("/prediction/status", {
-        state: {
-          state: modelLoading,
-          message: "",
-        },
+    instance.defaults.timeout = 700000;
+
+    instance
+      .post("/api/rent-forecast", selectedFeature)
+      .then((response) => {
+        if (response) {
+          console.log(response);
+          setModalLoading(false);
+
+          navigate("/prediction/status", {
+            state: {
+              state: modelLoading,
+              message: response?.data,
+              feature: selectedFeature,
+            },
+          });
+        }
+        setErrorMessage("");
+      })
+      .catch((err) => {
+        setModalLoading(false);
+        console.log(err);
+        setErrorMessage("Something went wrong. Could not predict the rent.");
       });
-    }, [10000]);
-
-    // instance.defaults.timeout = 60000;
-
-    // instance
-    //   .post("/api/rent-forecast", selectedFeature)
-    //   .then((response) => {
-    //     if (response) {
-    //       console.log(response);
-    //       setModalLoading(false);
-
-    //       navigate("/prediction/status", {
-    //         state: {
-    //           state: modelLoading,
-    //           message: response?.data,
-    //         },
-    //       });
-    //     }
-    //     setErrorMessage("");
-    //   })
-    //   .catch((err) => {
-    //     setModalLoading(false);
-    //     setErrorMessage("Something went wrong. Could not predict the rent.");
-    //     console.log(err);
-    //   });
   };
 
   const downloadSampleCSV = () => {
@@ -301,125 +296,122 @@ const Model = () => {
   return (
     <>
       {modelLoading ? (
-        <div className="d-flex flex-column justify-content-center align-items-center pt-5 mt-5">
-          <Loading />
-          <p className="text-center fs-9 pt-2">
-            We are working on predicting your rent. It might take a while.
-            Please bear with us.
-          </p>
-        </div>
-      ) : fileState?.succces ? (
-        <Message message={fileState?.message} />
+        <ModelTrainingState state={modelLoading} message={""} />
       ) : (
-        <div className="landingPage my-5">
-          <div className="header text-center mb-4">
-            <h2 className="mb-1">Find the ideal rent price</h2>
-          </div>
-          <div class="container-fluid text-center">
-            <div class="row justify-content-center">
-              <div class="col-lg-12 col-md-12 col-sm-12 ">
-                <span className="secondaryHead text-left text-muted ">
-                  Upload a CSV with necessary columns
-                </span>{" "}
-                <div className="mt-4">
-                  <p class="border-0 bg-transparent mt-3 cursor-pointer">
-                    <span className="text-primary-color">Note:</span>
-                    <span className="fs-9">
-                      {" "}
-                      Please look at the{" "}
-                      <span
-                        className="text-decoration-underline fs-9 text-primary-color text-uppercase"
-                        onClick={downloadSampleCSV}
-                      >
-                        sample CSV
-                      </span>{" "}
-                      to know which format to upload the file
-                    </span>{" "}
-                  </p>
-                  <div class="mb-3 mt-2 w-50 mx-auto">
-                    <input
-                      class="form-control"
-                      type="file"
-                      id="formFile"
-                      onChange={handleFileChange}
-                      accept=".csv"
-                    />
-                    {file && !errorMessage && (
-                      <p className="text-primary-color py-3">
+        !showPrediction &&
+        (fileState?.succces ? (
+          <Message message={fileState?.message} />
+        ) : (
+          <div className="landingPage my-5">
+            <div className="header text-center mb-4">
+              <h2 className="mb-1">Find the ideal rent price</h2>
+            </div>
+            <div class="container-fluid text-center">
+              <div class="row justify-content-center">
+                <div class="col-lg-12 col-md-12 col-sm-12 ">
+                  <span className="secondaryHead text-left text-muted ">
+                    Upload a CSV with necessary columns
+                  </span>{" "}
+                  <div className="mt-4">
+                    <p class="border-0 bg-transparent mt-3 cursor-pointer">
+                      <span className="text-primary-color">Note:</span>
+                      <span className="fs-9">
                         {" "}
-                        <FaFileCsv />
-                        {file?.name}
-                      </p>
-                    )}
-                    {!fileState?.succces && (
-                      <p className="text-danger fs-9 mt-3">
-                        {fileState?.message}
-                      </p>
-                    )}
+                        Please look at the{" "}
+                        <span
+                          className="text-decoration-underline fs-9 text-primary-color text-uppercase"
+                          onClick={downloadSampleCSV}
+                        >
+                          sample CSV
+                        </span>{" "}
+                        to know which format to upload the file
+                      </span>{" "}
+                    </p>
+                    <div class="mb-3 mt-2 w-50 mx-auto">
+                      <input
+                        class="form-control"
+                        type="file"
+                        id="formFile"
+                        onChange={handleFileChange}
+                        accept=".csv"
+                      />
+                      {file && !errorMessage && (
+                        <p className="text-primary-color py-3">
+                          {" "}
+                          <FaFileCsv />
+                          {file?.name}
+                        </p>
+                      )}
+                      {!fileState?.succces && (
+                        <p className="text-danger fs-9 mt-3">
+                          {fileState?.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="footer">
+                    {loading ? <Loading /> : ""}
+                    <Button
+                      onClick={onSubmit}
+                      className=" px-2 py-2 bg-primary-color border-0 rounded-0  ms-2 fs-9"
+                      disabled={
+                        errorMessage !== "" || file === null || loading
+                          ? true
+                          : false
+                      }
+                    >
+                      Predict
+                    </Button>
+                    {fileState?.message && <p>{fileState?.message}</p>}
                   </div>
                 </div>
-                <div className="footer">
-                  {loading ? <Loading /> : ""}
+                <div className="my-4 custom-bottom">{/* <p>OR</p> */}</div>
+
+                <div className="col-lg-12 col-md-12 col-sm-12 mt-4">
+                  <span className="secondaryHead text-left text-muted ">
+                    Predict the rent for a single location
+                  </span>{" "}
+                  {errorMessage && (
+                    <p className="text-danger fs-9 mt-3">{errorMessage}</p>
+                  )}
+                  <div className="shadow px-4 w-50 mx-auto mt-4">
+                    <MultiStep
+                      activeStep={0}
+                      showNavigation={true}
+                      steps={steps}
+                      prevButton={{
+                        title: "Back",
+                        style: {
+                          background: "transparent",
+                          border: "1px solid #c1cd23",
+                          color: "#c1cd23",
+                          padding: ".2em 1.2em",
+                        },
+                      }}
+                      nextButton={{
+                        title: "Next",
+                        style: {
+                          background: "transparent",
+                          border: "1px solid #c1cd23",
+                          color: "#c1cd23",
+                          padding: ".2em 1.2em",
+                          margin: "2em 1em",
+                        },
+                      }}
+                    />
+                  </div>
                   <Button
-                    onClick={onSubmit}
-                    className=" px-2 py-2 bg-primary-color border-0 rounded-0  ms-2 fs-9"
-                    disabled={
-                      errorMessage !== "" || file === null || loading
-                        ? true
-                        : false
-                    }
+                    onClick={onSingleModelSubmit}
+                    className=" px-2 py-2 bg-primary-color border-0 rounded-0  ms-2 fs-9 my-3"
+                    disabled={errorMessage !== "" || loading ? true : false}
                   >
                     Predict
                   </Button>
-                  {fileState?.message && <p>{fileState?.message}</p>}
                 </div>
-              </div>
-              <div className="my-4 custom-bottom">{/* <p>OR</p> */}</div>
-
-              <div className="col-lg-12 col-md-12 col-sm-12 mt-4">
-                <span className="secondaryHead text-left text-muted ">
-                  Predict the rent for a single location
-                </span>{" "}
-                {errorMessage && (
-                  <p className="text-danger fs-9 mt-3">{errorMessage}</p>
-                )}
-                <div className="shadow px-4 w-50 mx-auto mt-4">
-                  <MultiStep
-                    activeStep={0}
-                    showNavigation={true}
-                    steps={steps}
-                    prevButton={{
-                      title: "Back",
-                      style: {
-                        background: "transparent",
-                        border: "1px solid #c1cd23",
-                        color: "#c1cd23",
-                        padding: ".2em 1.2em",
-                      },
-                    }}
-                    nextButton={{
-                      title: "Next",
-                      style: {
-                        background: "transparent",
-                        border: "1px solid #c1cd23",
-                        color: "#c1cd23",
-                        padding: ".2em 1.2em",
-                        margin: "2em 1em",
-                      },
-                    }}
-                  />
-                </div>
-                <Button
-                  onClick={onSingleModelSubmit}
-                  className=" px-2 py-2 bg-primary-color border-0 rounded-0  ms-2 fs-9 my-3"
-                  disabled={errorMessage !== "" || loading ? true : false}
-                >
-                  Predict
-                </Button>
               </div>
             </div>
           </div>
-        </div>
+        ))
       )}
     </>
   );
@@ -639,75 +631,95 @@ export const Amenity = ({ selectedFeature, setSelectedFeature }) => {
   );
 };
 
-export const ModelTrainingState = () => {
-  const location = useLocation();
-  const { state, message } = location?.state;
+// export const ModelTrainingState = () => {
+//   const location = useLocation();
+//   const { state, message, feature, steps } = location?.state;
 
-  const responseSteps = [
-    "Calculating Transit Score",
-    "Calculating Walk Score",
-    "Calculating Score Score",
-    "Calculating Crime Score",
-    "Calculating Grocery Score",
-    "Calculating Recreation Score",
-    "Calculating Education Score",
-    "Calculating Emergency Score",
-  ];
+//   console.log(state);
 
-  const [currentStep, setCurrentStep] = useState(0);
+//   return (
+//     <div className="w-100 bg-white mx-auto vh-70 pt-5 mt-5">
+//       {
+//         <div>
+//           {!state && message?.message !== "" && (
+//             <>
+//               <div className="d-flex flex-column justify-content-center align-items-center">
+//                 <GiTakeMyMoney fontSize={100} />
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (currentStep < responseSteps.length - 1) {
-        return setCurrentStep((prevStep) => prevStep + 1);
-      } else {
-        clearInterval(interval);
-      }
-    }, 1000); // Show each step for 5 seconds
+//                 <p className="fs-9 text-center pt-2 ">
+//                   The predicted rent is:{" "}
+//                   <span className="text-primary-color">
+//                     ${message?.predictedRent}
+//                   </span>
+//                 </p>
+//               </div>
 
-    // Clear the interval after 40 seconds
-    const timeout = setTimeout(() => {
-      clearInterval(interval);
-    }, 15000);
+//               {/* <div className="w-75 mx-auto mt-2">
+//                 <p className="fs-9 text-center text-primary-color">
+//                   The listing for which you wanted to predict the rent
+//                 </p>
 
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
-  }, [currentStep, responseSteps.length]);
-
-  // console.log(currentStep);
-  // console.log(responseSteps[currentStep]);
-
-  return (
-    <div className="w-100 bg-white mx-auto vh-70 pt-5 mt-5">
-      {state ? (
-        <div className="d-flex flex-column justify-content-center align-items-center">
-          <Loading />
-          <p className="text-center fs-9 pt-2">
-            We are working on predicting your rent. It might take a while.
-            Please bear with us.
-          </p>
-          <p>Step: {responseSteps[currentStep]}</p>
-        </div>
-      ) : (
-        <div>
-          {message?.message !== "" && (
-            <div className="d-flex flex-column justify-content-center align-items-center">
-              <GiTakeMyMoney fontSize={100} />
-
-              <p className="fs-9 text-center pt-2 ">
-                The predicted rent is:{" "}
-                <span className="text-primary-color">
-                  ${message?.predictedRent}
-                </span>
-              </p>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
+//                 {feature && Object.keys(feature)?.length > 0 && (
+//                   <div className="table-responsive ">
+//                     <table className="table table-bordered table-sm fs-9">
+//                       <thead>
+//                         <tr>
+//                           {feature &&
+//                             Object.keys(feature)?.map((feat, idx) => {
+//                               return (
+//                                 <th className="fst-italic fw-normal">{feat}</th>
+//                               );
+//                             })}
+//                         </tr>
+//                       </thead>
+//                       <tbody>
+//                         <tr>
+//                           {feature &&
+//                             Object.keys(feature)?.map((feat, idx) => {
+//                               return (
+//                                 <td className="fst-italic fw-normal">
+//                                   {feature[feat]}
+//                                 </td>
+//                               );
+//                             })}
+//                         </tr>
+//                       </tbody>
+//                     </table>
+//                   </div>
+//                 )}
+//               </div> */}
+//               {/* <div className="shadow px-4 w-50 mx-auto mt-4">
+//                 <MultiStep
+//                   activeStep={0}
+//                   showNavigation={true}
+//                   steps={steps}
+//                   prevButton={{
+//                     title: "Back",
+//                     style: {
+//                       background: "transparent",
+//                       border: "1px solid #c1cd23",
+//                       color: "#c1cd23",
+//                       padding: ".2em 1.2em",
+//                     },
+//                   }}
+//                   nextButton={{
+//                     title: "Next",
+//                     style: {
+//                       background: "transparent",
+//                       border: "1px solid #c1cd23",
+//                       color: "#c1cd23",
+//                       padding: ".2em 1.2em",
+//                       margin: "2em 1em",
+//                     },
+//                   }}
+//                 />
+//               </div> */}
+//             </>
+//           )}
+//         </div>
+//       }
+//     </div>
+//   );
+// };
 
 export default Model;
