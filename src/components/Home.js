@@ -43,7 +43,10 @@ const Home = () => {
           </button>
         </li>
       </ul>
-      <div className="tab-content" id="myTabContent">
+      <div
+        className="tab-content  d-flex justify-content-center"
+        id="myTabContent"
+      >
         <div
           className={`tab-pane fade ${
             activeTab === "home" ? "show active" : ""
