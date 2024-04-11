@@ -20,8 +20,8 @@ const Home = () => {
   };
 
   return (
-    <div className="container w-75 pt-5 pb-2 px-4">
-      <ul className="nav nav-tabs fs-9" id="myTab" role="tablist">
+    <div className="container w-75 pt-5 pb-2 px-0">
+      <ul className="nav nav-tabs fs-9 mx-3" id="myTab" role="tablist">
         <li className="nav-item" role="presentation">
           <button
             className={`nav-link ${activeTab === "overview" ? "active" : ""}`}
