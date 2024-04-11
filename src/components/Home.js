@@ -2,14 +2,18 @@ import React, { useState } from "react";
 import { TableauEmbed } from "@stoddabr/react-tableau-embed-live";
 
 const Home = () => {
-  const [activeTab, setActiveTab] = useState("home");
+  const [activeTab, setActiveTab] = useState("overview");
 
-  const propertyUrl =
-    "https://public.tableau.com/views/CompetitorAnalysis_17121029904210/CompetitorAnalysis?:language=en-US&publish=yes&:sid=&:display_count=n&:origin=viz_share_link";
+  const competitorUrl =
+    "https://public.tableau.com/views/CompetitorAnalysis_17127319838040/CompetitorAnalysis?:language=en-US&publish=yes&:sid=&:display_count=n&:origin=viz_share_link";
+  const overviewUrl =
+    "https://public.tableau.com/shared/RRS6NDK8J?:display_count=n&:origin=viz_share_link";
   const parkingUrl =
-    "https://public.tableau.com/views/CommonDashboard/ParkingDashboard?:language=en-US&publish=yes&:sid=&:display_count=n&:origin=viz_share_link";
-  const insightsUrl =
-    "https://public.tableau.com/views/CommonDashboard/InsightDashboard?:language=en-US&publish=yes&:sid=&:display_count=n&:origin=viz_share_link";
+    "https://public.tableau.com/views/CommonDashboard_17127262051290/ParkingDashboard?:language=en-US&publish=yes&:sid=&:display_count=n&:origin=viz_share_link";
+  const propertyUrl =
+    "https://public.tableau.com/views/CommonDashboard_17127262051290/ListingsDashboard?:language=en-US&publish=yes&:sid=&:display_count=n&:origin=viz_share_link";
+  const builderUrl =
+    "https://public.tableau.com/views/BuilderDashboard_17127297372520/BuildersDashboard?:language=en-US&publish=yes&:sid=&:display_count=n&:origin=viz_share_link";
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -20,26 +24,42 @@ const Home = () => {
       <ul className="nav nav-tabs fs-9" id="myTab" role="tablist">
         <li className="nav-item" role="presentation">
           <button
-            className={`nav-link ${activeTab === "home" ? "active" : ""}`}
-            onClick={() => handleTabChange("home")}
+            className={`nav-link ${activeTab === "overview" ? "active" : ""}`}
+            onClick={() => handleTabChange("overview")}
+          >
+            Overview
+          </button>
+        </li>
+        <li className="nav-item" role="presentation">
+          <button
+            className={`nav-link ${activeTab === "listing" ? "active" : ""}`}
+            onClick={() => handleTabChange("listing")}
+          >
+            Listing
+          </button>
+        </li>
+        <li className="nav-item" role="presentation">
+          <button
+            className={`nav-link ${activeTab === "competitor" ? "active" : ""}`}
+            onClick={() => handleTabChange("competitor")}
           >
             Competitor Analysis
           </button>
         </li>
         <li className="nav-item" role="presentation">
           <button
-            className={`nav-link ${activeTab === "profile" ? "active" : ""}`}
-            onClick={() => handleTabChange("profile")}
+            className={`nav-link ${activeTab === "parking" ? "active" : ""}`}
+            onClick={() => handleTabChange("parking")}
           >
             Parking
           </button>
         </li>
         <li className="nav-item" role="presentation">
           <button
-            className={`nav-link ${activeTab === "contact" ? "active" : ""}`}
-            onClick={() => handleTabChange("contact")}
+            className={`nav-link ${activeTab === "builder" ? "active" : ""}`}
+            onClick={() => handleTabChange("builder")}
           >
-            Insights
+            Builder
           </button>
         </li>
       </ul>
@@ -49,12 +69,25 @@ const Home = () => {
       >
         <div
           className={`tab-pane fade ${
-            activeTab === "home" ? "show active" : ""
+            activeTab === "overview" ? "show active" : ""
           }`}
-          id="home"
+          id="overview"
           role="tabpanel"
         >
-          {activeTab === "home" && (
+          {activeTab === "overview" && (
+            <div className="tableau-container">
+              <TableauEmbed sourceUrl={overviewUrl} />
+            </div>
+          )}
+        </div>
+        <div
+          className={`tab-pane fade ${
+            activeTab === "listing" ? "show active" : ""
+          }`}
+          id="listing"
+          role="tabpanel"
+        >
+          {activeTab === "listing" && (
             <div className="tableau-container">
               <TableauEmbed sourceUrl={propertyUrl} />
             </div>
@@ -62,12 +95,25 @@ const Home = () => {
         </div>
         <div
           className={`tab-pane fade ${
-            activeTab === "profile" ? "show active" : ""
+            activeTab === "competitor" ? "show active" : ""
           }`}
-          id="profile"
+          id="competitor"
           role="tabpanel"
         >
-          {activeTab === "profile" && (
+          {activeTab === "competitor" && (
+            <div className="tableau-container">
+              <TableauEmbed sourceUrl={competitorUrl} />
+            </div>
+          )}
+        </div>
+        <div
+          className={`tab-pane fade ${
+            activeTab === "parking" ? "show active" : ""
+          }`}
+          id="parking"
+          role="tabpanel"
+        >
+          {activeTab === "parking" && (
             <div className="tableau-container">
               <TableauEmbed sourceUrl={parkingUrl} />
             </div>
@@ -75,14 +121,14 @@ const Home = () => {
         </div>
         <div
           className={`tab-pane fade ${
-            activeTab === "contact" ? "show active" : ""
+            activeTab === "builder" ? "show active" : ""
           }`}
-          id="contact"
+          id="builder"
           role="tabpanel"
         >
-          {activeTab === "contact" && (
+          {activeTab === "builder" && (
             <div className="tableau-container">
-              <TableauEmbed sourceUrl={insightsUrl} />
+              <TableauEmbed sourceUrl={builderUrl} />
             </div>
           )}
         </div>
