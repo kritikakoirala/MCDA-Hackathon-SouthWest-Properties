@@ -20,7 +20,7 @@ const Properties = () => {
   const [dataLoading, setDataLoading] = useState(false);
 
   useEffect(() => {
-    setDataLoading(false);
+    setDataLoading(true);
     instance
       .get("api/listings")
       .then((res) => {
