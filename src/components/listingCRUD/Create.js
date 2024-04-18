@@ -78,7 +78,7 @@ const Create = () => {
     expectedRows: [
       "townhouse",
       '"106 Dalkeith Drive, Dartmouth, Nova Scotia, B2W 4E8"',
-      "lease",
+      "TownHouse",
       "2000",
       "https://www.google.com/url?house-image.jpg",
       "1",
