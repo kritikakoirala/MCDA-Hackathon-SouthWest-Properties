@@ -20,8 +20,8 @@ const Home = () => {
   };
 
   return (
-    <div className="container w-75 pt-5 pb-2 px-4">
-      <ul className="nav nav-tabs fs-9" id="myTab" role="tablist">
+    <div className="container w-75 pt-5 pb-2 px-0">
+      <ul className="nav nav-tabs fs-9 mx-3" id="myTab" role="tablist">
         <li className="nav-item" role="presentation">
           <button
             className={`nav-link ${activeTab === "overview" ? "active" : ""}`}
@@ -63,7 +63,10 @@ const Home = () => {
           </button>
         </li>
       </ul>
-      <div className="tab-content" id="myTabContent">
+      <div
+        className="tab-content  d-flex justify-content-center"
+        id="myTabContent"
+      >
         <div
           className={`tab-pane fade ${
             activeTab === "overview" ? "show active" : ""
