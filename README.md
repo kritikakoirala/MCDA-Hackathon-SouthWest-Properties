@@ -1,70 +1,60 @@
-# Getting Started with Create React App
+# SW Estate 360 | Hackathon Submission for SouthWest Properties
+SW Estate 360 is a centralized platform designed to transform the way rental forecasts and property insights are managed. It features automated scrapers and crawlers for real-time data collection, coupled with a dynamic dashboard that provides immediate insights. The platform also includes a sophisticated rental forecasting model, along with alerts for upcoming projects, making it an essential tool for investors and property managers. We also have Inhouse developed APIs which will help you calculate walk, transit and bike scores of properties.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Explore our platform:** [SW Estate 360](https://estate360.netlify.app/)
 
-## Available Scripts
+## Technology Stack
+- ReactJS
+- Flask
+- Tableau
+- AWS RDS MySQL
+- AWS S3
+- AWS EC2
 
-In the project directory, you can run:
+## Product Features 
 
-### `npm start`
+### Automated Data Collection
+  - API Scraping
+  - Web Scraping
+  - Web Crawling
+     
+### Real-Time Dashboards
+  - Overview Dashboard
+  - Listings Dashboard
+  - Competitor Analysis Dashboard
+  - Parking Dashboard
+  - Upcoming Project Dashboard
+        
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/b812cfbd-c295-4a15-83be-114fd8651937)
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/a021889f-2cc4-4cef-b648-a2afa28a0cf6)
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/e776231b-21c9-40cb-ae4f-7ecd04ca3b85)
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/1fa0a542-79e5-40a9-9bc0-e5efac5fead3)
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/ede5f452-3bce-434b-a060-6f68d0189e0d)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/43282f55-a82e-4cbd-91ad-3bb32d865973)
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/5cfbf1ca-2396-46bf-a203-b69dcaa76aa9)
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/83e0ec2b-099c-42a5-b833-99de9824e8bd)
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/f1855aaf-e960-4f24-ac16-7f5950f23b8e)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/b2b63847-fd05-45fb-be5b-0d6b9228d41b)
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/1654e603-7515-42d2-8023-7628fbb36d62)
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/d119ac42-69c9-4fdf-ac9a-83a3ae17aac5)
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/67b794bd-c62c-4650-8641-58811e4130c3)
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/4d0ddff2-6aae-4d2b-a141-cc1c33bb777f)
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/198a40ff-34ee-4a6c-b8a3-bd3c85f211fb)
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/64d3a3fd-e883-4ce8-8e1c-6ab931bc4404)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+![image](https://github.com/sameer-patel-dev/MCDA-Hackathon-SouthWest-Properties/assets/52646890/78c9b45f-380b-4839-a1a4-04cefb2b4f62)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
