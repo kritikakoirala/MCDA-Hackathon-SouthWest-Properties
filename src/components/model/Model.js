@@ -1,17 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import Dropdown from "../common/Dropdown";
+import Dropdown from "../../common/Dropdown";
 import Switch from "react-switch";
 import { AddressAutofill } from "@mapbox/search-js-react";
-import Address from "./Address";
-import Button from "../common/Button";
+import Button from "../../common/Button";
 import { FaFileCsv } from "react-icons/fa";
 import Papa from "papaparse";
 import MultiStep from "react-multistep";
-import { instance } from "../config/config";
-import Message from "../common/Message";
-import { setSelectionRange } from "@testing-library/user-event/dist/utils";
+import { instance } from "../../config/config";
+import Message from "../../common/Message";
 import { useNavigate, useLocation } from "react-router-dom";
-import Loading from "./Loading";
+import Loading from "../../common/Loading";
 import ModelTrainingState from "./ModelTrainingState";
 
 const Model = () => {
@@ -482,7 +480,9 @@ export const Basic = ({
           <div className="w-75 autocomplete-address">
             <AddressAutofill
               onRetrieve={handleRetrieve}
-              accessToken={"pk.eyJ1Ijoia3JpdGlrYWtvaXJhbGEiLCJhIjoiY2x0enhmaWRmMDU1eTJrb21hYXliN3ZyOSJ9.QZJhgU5tMeANennF48VcpA"}
+              accessToken={
+                "pk.eyJ1Ijoia3JpdGlrYWtvaXJhbGEiLCJhIjoiY2x0enhmaWRmMDU1eTJrb21hYXliN3ZyOSJ9.QZJhgU5tMeANennF48VcpA"
+              }
             >
               <input
                 className="form-control border-0 border-bottom rounded-0 fs-8 py-1 px-0 w-100 "

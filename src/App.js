@@ -4,14 +4,14 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Navbar from "./common/Navbar";
 import "./assets/styles/main.css";
-import SingleView from "./components/SingleView";
-import Properties from "./components/Properties";
-import Model from "./components/Model";
+import SingleView from "./components/listing/SingleView";
+import Properties from "./components/listing/Properties";
+import Model from "./components/model/Model";
 import { useEffect } from "react";
-import Model_Predictions from "./components/Model_Predictions";
-import Create from "./components/listingCRUD/Create";
+import Model_Predictions from "./components/model/Model_Predictions";
+import Create from "./components/listing/Create";
 import Builders from "./components/Builders";
-import ModelTrainingState from "./components/ModelTrainingState";
+import ModelTrainingState from "./components/model/ModelTrainingState";
 
 function App() {
   const successCallback = (position) => {

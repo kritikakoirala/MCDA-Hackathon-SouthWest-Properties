@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { instance } from "../config/config";
-import Loading from "./Loading";
+import { instance } from "../../config/config";
+import Loading from "../../common/Loading";
 
 const Model_Predictions = () => {
   const [files, setFiles] = useState([]);

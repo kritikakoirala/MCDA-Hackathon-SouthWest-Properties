@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
-import noImg from "../assets/img/no-img.jpg";
+import noImg from "../../assets/img/no-img.jpg";
 
 const MiniListing = ({ filteredItems, handleMouseEvent }) => {
   return (

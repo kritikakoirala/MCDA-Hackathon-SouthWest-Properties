@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Filter from "./Filter";
-import Search from "./Search";
+import Filter from "../../helpers/Filter";
+import Search from "../../helpers/Search";
 import Listing from "./Listing";
-import Dropdown from "../common/Dropdown";
 import { MdClose } from "react-icons/md";
-import { instance } from "../config/config";
-import Loading from "./Loading";
+import { instance } from "../../config/config";
+import Loading from "../../common/Loading";
 
 const Properties = () => {
   // const initialData = jsonData;

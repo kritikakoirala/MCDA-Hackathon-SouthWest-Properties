@@ -4,7 +4,7 @@ import { MdOutlineEventNote } from "react-icons/md";
 import { BsFillLampFill } from "react-icons/bs";
 import { BiDetail } from "react-icons/bi";
 import { FaLocationDot } from "react-icons/fa6";
-import { instance } from "../config/config";
+import { instance } from "../../config/config";
 import { MdLocalGroceryStore, MdMovie, MdEmergencyShare } from "react-icons/md";
 import { GiBookshelf, GiCrimeSceneTape } from "react-icons/gi";
 import {
@@ -15,7 +15,7 @@ import {
 import "react-circular-progressbar/dist/styles.css";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import noImg from "../assets/img/no-img.jpg";
+import noImg from "../../assets/img/no-img.jpg";
 const SingleView = () => {
   const location = useLocation();
   const id = location?.state;

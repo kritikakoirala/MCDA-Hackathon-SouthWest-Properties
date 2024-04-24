@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaFileCsv } from "react-icons/fa";
-import Loading from "../Loading";
+import Loading from "../../common/Loading";
 import Button from "../../common/Button";
 import MultiStep from "react-multistep";
 import Dropdown from "../../common/Dropdown";
@@ -534,7 +534,9 @@ export const Basic = ({
           <div className="w-75 autocomplete-address">
             <AddressAutofill
               onRetrieve={handleRetrieve}
-              accessToken={"pk.eyJ1Ijoia3JpdGlrYWtvaXJhbGEiLCJhIjoiY2x0enhmaWRmMDU1eTJrb21hYXliN3ZyOSJ9.QZJhgU5tMeANennF48VcpA"}
+              accessToken={
+                "pk.eyJ1Ijoia3JpdGlrYWtvaXJhbGEiLCJhIjoiY2x0enhmaWRmMDU1eTJrb21hYXliN3ZyOSJ9.QZJhgU5tMeANennF48VcpA"
+              }
             >
               <input
                 className="form-control border-0 border-bottom rounded-0 fs-8 py-1 px-0 w-100 "
